@@ -8,7 +8,7 @@ class infautils {
     }
 
     get_c_url(url) {
-        return `${this.getConfig().companion.url}/${url}`
+        return `${this.getConfig().companion.url}${url}`
     }
 
     do_ajax(doauth, f, url, data, hdrs) {
@@ -58,4 +58,4 @@ class infautils {
 
 }
 
-let infaUtils = new infaUtils();
+let infaUtils = new infautils();

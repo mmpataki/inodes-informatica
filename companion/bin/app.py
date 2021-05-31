@@ -221,8 +221,9 @@ def runWf(user, job_id):
 	else:
 		updateWfStatus(lambda x: True, wf, 'failed' if failed else 'completed')
 
-@app.route('/wf/<usr>', methods = ['POST'])
-def submitwf(usr):
+@app.route('/wf', methods = ['POST'])
+def submitwf():
+	usr = authenticate(request)
 	req = request.get_json()
 	for task in req['tasks']: task['id'] = 'task_{}_{}'.format(timenow(), random.randint(0, 10000000))
 	if usr not in work_flows:

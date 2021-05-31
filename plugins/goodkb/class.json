@@ -3,7 +3,7 @@
     "jsPaths": [
         "/config.js",
         "/infautils.js",
-        "kb-plugin/plugin.js",
+        "kb-plugin/plugin.js"
     ],
     "cssPaths": [
         "kb-plugin/plugin.css"

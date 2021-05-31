@@ -1034,8 +1034,7 @@ class JobViewer {
 
     _show(job, statusOb) {
         let loadLog = (url) => {
-            infaUtils.cget(`/wf/joblogs/${url.substring(2)}`)
-                .then(r => this.logcontent.innerText = r.response)
+            infaUtils.cget(url).then(r => this.logcontent.innerText = r.response)
             switchPanel('logs')
             this.logtitle.innerText = url.substring(7)
         }

@@ -10,7 +10,7 @@ shift
 id "$user"
 if [ "$?" != 0 ]
 then
-    useradd --no-create-home "$user"
+    sudo useradd --no-create-home "$user"
 fi
 
-sudo -u "$user" bash -c "cd $taskdir; $@"
+sudo -u "$user" bash -c "cd $taskdir; bash $@"

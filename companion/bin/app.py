@@ -1,4 +1,5 @@
 import json, socket, os, sys, time, random, subprocess, flask, copy, re, requests
+from requests import auth
 from urlparse import urlparse
 from flask import Flask, request, redirect, jsonify, send_from_directory, abort
 from gevent.select import select
@@ -38,11 +39,12 @@ def passin():
 
 @app.route('/poll')
 def start_proc():
+	usr = authenticate(request)
 	def inner(rid):
 		if rid not in reqs:
 			yield 'data: MPATAKI-STOP_EVENT-SOURCE\n\n'
 			return
-		fdir='{}/{}'.format( rid)
+		fdir='{}/{}/{}'.format(os.environ['EXEC_DIR'], usr, rid)
 		f = '{}/script'.format(fdir)
 		os.mkdir(fdir)
 		fp=open(f, 'w')
@@ -165,7 +167,7 @@ def updateWfStatus(lmbda, wf, status):
 def runWf(user, job_id):
 
 	#make a dir for job
-	job_dir = './jobs/{}/{}'.format(user, job_id)
+	job_dir = '{}/{}/{}'.format(os.environ['EXEC_DIR'], user, job_id)
 	os.makedirs(job_dir)
 
 	wf = work_flows[user][job_id]
@@ -205,8 +207,9 @@ def runWf(user, job_id):
         
 		with open(script_path, 'w') as fp:
 			fp.write(task['script'])
-		task['stdout'] = stdout
-		task['stderr'] = stderr
+		task['stdout'] = '/wf/joblogs/{}/{}/stdout.txt'
+		task['stderr'] = '/wf/joblogs/{}/{}/stderr.txt'
+		task['script'] = '/wf/joblogs/{}/{}/script.sh'
 
 		#execute
 		upd('running')
@@ -245,9 +248,9 @@ def getWf(usr, job_id):
 		abort(404)
 	return work_flows[usr][job_id]
 
-@app.route('/wf/joblogs/<path:path>', methods = ['GET'])
-def serveLog(path):
-	return send_from_directory('.', path, as_attachment=False)
+@app.route('/wf/joblogs/<jobid>/<taskid>/<type>', methods = ['GET'])
+def serveLog(jobid, taskid, type):
+	return send_from_directory(os.environ['EXEC_DIR'], '{}/{}/{}'.format(jobid, taskid, type), as_attachment=False)
 
 @app.route('/wf/<usr>/<jobid>/stop', methods = ['POST'])
 def stopJob(usr, jobid):

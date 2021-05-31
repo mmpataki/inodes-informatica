@@ -1,9 +1,9 @@
 {
     "name": "goodkb",
     "jsPaths": [
-        "kb-plugin/plugin.js",
         "/config.js",
-        "/infautils.js"
+        "/infautils.js",
+        "kb-plugin/plugin.js",
     ],
     "cssPaths": [
         "kb-plugin/plugin.css"

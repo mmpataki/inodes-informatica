@@ -1,9 +1,9 @@
 {
   "name": "instances",
   "jsPaths": [
-    "./instances-plugin/instances.js",
     "/config.js",
-    "/infautils.js"
+    "/infautils.js",
+    "./instances-plugin/instances.js"
   ],
   "cssPaths": [
     "./instances-plugin/instances.css"

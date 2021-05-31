@@ -207,9 +207,9 @@ def runWf(user, job_id):
         
 		with open(script_path, 'w') as fp:
 			fp.write(task['script'])
-		task['stdout'] = '/wf/joblogs/{}/{}/stdout.txt'
-		task['stderr'] = '/wf/joblogs/{}/{}/stderr.txt'
-		task['script'] = '/wf/joblogs/{}/{}/script.sh'
+		task['stdout'] = '/wf/joblogs/{}/{}/stdout.txt'.format(job_id, task_id)
+		task['stderr'] = '/wf/joblogs/{}/{}/stderr.txt'.format(job_id, task_id)
+		task['script'] = '/wf/joblogs/{}/{}/script.sh'.format(job_id, task_id)
 
 		#execute
 		upd('running')

@@ -1089,7 +1089,8 @@ class JobViewer {
                                             },
                                             { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'details', evnts: { click: (e) => { e.stopPropagation(); showSteps(task.displayName, tstatus.steps) } } },
                                             { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'stdout', evnts: { click: (e) => { e.stopPropagation(); loadLog(task.stdout) } } },
-                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'stderr', evnts: { click: (e) => { e.stopPropagation(); loadLog(task.stderr) } } }
+                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'stderr', evnts: { click: (e) => { e.stopPropagation(); loadLog(task.stderr) } } },
+                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'script', evnts: { click: (e) => { e.stopPropagation(); loadLog(task.script) } } },
                                         ])
                                     ]
                                 }

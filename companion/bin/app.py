@@ -207,9 +207,9 @@ def runWf(user, job_id):
         
 		with open(script_path, 'w') as fp:
 			fp.write(task['script'])
-		task['stdout'] = '/wf/joblogs/{}/{}/stdout.txt'.format(job_id, task_id)
-		task['stderr'] = '/wf/joblogs/{}/{}/stderr.txt'.format(job_id, task_id)
-		task['script'] = '/wf/joblogs/{}/{}/script.sh'.format(job_id, task_id)
+		task['stdout'] = '/wf/joblogs/{}/{}/{}/stdout.txt'.format(user, job_id, task_id)
+		task['stderr'] = '/wf/joblogs/{}/{}/{}/stderr.txt'.format(user, job_id, task_id)
+		task['script'] = '/wf/joblogs/{}/{}/{}/script.sh'.format(user, job_id, task_id)
 
 		#execute
 		upd('running')
@@ -248,9 +248,9 @@ def getWf(usr, job_id):
 		abort(404)
 	return work_flows[usr][job_id]
 
-@app.route('/wf/joblogs/<jobid>/<taskid>/<type>', methods = ['GET'])
+@app.route('/wf/joblogs/<user>/<jobid>/<taskid>/<type>', methods = ['GET'])
 def serveLog(jobid, taskid, type):
-	return send_from_directory(os.environ['EXEC_DIR'], '{}/{}/{}'.format(jobid, taskid, type), as_attachment=False)
+	return send_from_directory(os.environ['EXEC_DIR'], '{}/{}/{}/{}'.format(user, jobid, taskid, type), as_attachment=False)
 
 @app.route('/wf/<usr>/<jobid>/stop', methods = ['POST'])
 def stopJob(usr, jobid):

@@ -1088,9 +1088,9 @@ class JobViewer {
                                                 children: (status != 'running' ? [] : [{ ele: 'img', attribs: { src: '/wait.gif' }, styles: { 'vertical-align': 'middle', 'margin-left': '5px' } }])
                                             },
                                             { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'details', evnts: { click: (e) => { e.stopPropagation(); showSteps(task.displayName, tstatus.steps) } } },
-                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'stdout', evnts: { click: (e) => { e.stopPropagation(); loadLog(task.stdout) } } },
-                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'stderr', evnts: { click: (e) => { e.stopPropagation(); loadLog(task.stderr) } } },
-                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'script', evnts: { click: (e) => { e.stopPropagation(); loadLog(task.script) } } },
+                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'stdout', evnts: { click: (e) => { e.stopPropagation(); loadLog(tstatus.stdout) } } },
+                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'stderr', evnts: { click: (e) => { e.stopPropagation(); loadLog(tstatus.stderr) } } },
+                                            { ele: 'a', attribs: { href: '#' }, classList: 'log-links', text: 'script', evnts: { click: (e) => { e.stopPropagation(); loadLog(tstatus.script) } } },
                                         ])
                                     ]
                                 }

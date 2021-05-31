@@ -139,7 +139,7 @@ def get_stats():
 		dt = datetime.strptime(s, '%Y-%m-%d %H:%M:%S.%f')
 		return (dt - epoch).total_seconds() * 1000.0
 	data = []
-	with open('../serverr.log') as fp:
+	with open('{}/inodes.log'.format(os.environ['LOGS_DIR'])) as fp:
 		#2021-04-18 20:16:37.169  INFO 26407 --- [nio-8080-exec-6] inodes.beans.InodesFilter : [admin] - (10.80.227.70) - POST /data/9bc5c950-5c1/approve - 200
 		for line in fp.readlines():
 			m = p.match(line)

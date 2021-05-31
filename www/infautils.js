@@ -56,6 +56,42 @@ class infautils {
         return this.do_ajax(true, _put, url, data, hdrs)
     }
 
+    runCommand(scriptText, pnode, callBack, finishCallback) {
+
+        if (!pnode) {
+            pnode = document.createElement('div');
+        }
+        pnode.innerHTML = ''
+
+        let out;
+        if (pnode) {
+            out = document.createElement('pre');
+            out.style = "background-color: #f5f5f5; padding: 10px; color: black; width: 100%; height: 200px; overflow: auto"
+            pnode.appendChild(out);
+        }
+
+        return new Promise((resolve, reject) => {
+            this.cposta('/cli', { script: scriptText }, { 'Content-Type': 'application/json' })
+                .then(d => {
+                    d = d.response
+                    resolve(d)
+                    var source = new EventSource(`${this.getConfig().companion.url}/poll?rid=${d}`);
+                    source.onmessage = function (event) {
+                        if (event.data == 'MPATAKI-STOP_EVENT-SOURCE') {
+                            event.target.close()
+                            if (finishCallback)
+                                finishCallback()
+                            return
+                        }
+                        if (out)
+                            out.innerHTML += event.data + "<br/>"
+                        if (callBack)
+                            callBack(event.data)
+                    }
+                })
+        });
+    }
+
 }
 
 let infaUtils = new infautils();

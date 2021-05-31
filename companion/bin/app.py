@@ -25,8 +25,9 @@ procs = {}
 
 @app.route('/cli', methods=['POST'])
 def cli():
+	usr = authenticate(request)
 	i =  '{}_{}'.format(random.random(), time.time())
-	reqs[i] = request.get_json()['script']
+	reqs[i] = {'script': request.get_json()['script'], 'user': usr}
 	return i
 
 @app.route('/passin', methods=['POST'])
@@ -39,25 +40,24 @@ def passin():
 
 @app.route('/poll')
 def start_proc():
-	usr = authenticate(request)
 	def inner(rid):
 		if rid not in reqs:
 			yield 'data: MPATAKI-STOP_EVENT-SOURCE\n\n'
 			return
-		fdir='{}/{}/{}'.format(os.environ['EXEC_DIR'], usr, rid)
+		user = reqs[rid]['user']
+		fdir='{}/{}/{}'.format(os.environ['EXEC_DIR'], user, rid)
 		f = '{}/script'.format(fdir)
 		os.mkdir(fdir)
 		fp=open(f, 'w')
-		fp.write(reqs[rid])
+		fp.write(reqs[rid]['script'])
 		fp.close()
 		reqs.pop(rid)
 		proc = subprocess.Popen(
-				['bash script'],
+				['bash secure_execute.sh {} {} script'.format(user, fdir)],
 				shell=True,
 				stdout=subprocess.PIPE,
 				stderr=subprocess.PIPE,
-				stdin=subprocess.PIPE,
-				cwd=fdir
+				stdin=subprocess.PIPE
 			)
 		procs[rid] = proc
 		
@@ -88,7 +88,6 @@ def start_proc():
 		print("process return code:", ret_code)
 		return
 	rid=request.args['rid']
-	print(rid)
 	return flask.Response(inner(rid), mimetype='text/event-stream')
 
 def connResponse(message, lastUpdateTime):
@@ -207,9 +206,9 @@ def runWf(user, job_id):
         
 		with open(script_path, 'w') as fp:
 			fp.write(task['script'])
-		task['stdout'] = '/wf/joblogs/{}/{}/{}/stdout.txt'.format(user, job_id, task_id)
-		task['stderr'] = '/wf/joblogs/{}/{}/{}/stderr.txt'.format(user, job_id, task_id)
-		task['script'] = '/wf/joblogs/{}/{}/{}/script.sh'.format(user, job_id, task_id)
+		taskstatus[task_id]['stdout'] = '/wf/joblogs/{}/{}/{}/stdout.txt'.format(user, job_id, task_id)
+		taskstatus[task_id]['stderr'] = '/wf/joblogs/{}/{}/{}/stderr.txt'.format(user, job_id, task_id)
+		taskstatus[task_id]['script'] = '/wf/joblogs/{}/{}/{}/script.sh'.format(user, job_id, task_id)
 
 		#execute
 		upd('running')
@@ -249,7 +248,7 @@ def getWf(usr, job_id):
 	return work_flows[usr][job_id]
 
 @app.route('/wf/joblogs/<user>/<jobid>/<taskid>/<type>', methods = ['GET'])
-def serveLog(jobid, taskid, type):
+def serveLog(user, jobid, taskid, type):
 	return send_from_directory(os.environ['EXEC_DIR'], '{}/{}/{}/{}'.format(user, jobid, taskid, type), as_attachment=False)
 
 @app.route('/wf/<usr>/<jobid>/stop', methods = ['POST'])

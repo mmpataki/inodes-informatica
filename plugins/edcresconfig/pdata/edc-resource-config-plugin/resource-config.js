@@ -225,7 +225,7 @@ class ResourceSelectionStory {
             callWithWaitUI(where, (done) => {
                 let headers = { Authorization: "Basic " + btoa(`${c.username}:${c.password}`) }
                 let getRConf = ncors_get(`${c.url}/access/1/catalog/resources`, undefined, headers)
-                let getVersion = nocors_get(`${c.url}/access/2/catalog/data/productInformation`, undefined, headers)
+                let getVersion = ncors_get(`${c.url}/access/2/catalog/data/productInformation`, undefined, headers)
                 Promise.allSettled([getRConf, getVersion])
                     .then(proms => {
                         let resources = JSON.parse(proms[0].value.response)
@@ -314,7 +314,7 @@ class ResourceConfigStory {
 
         this.loadResourceConfig = (ele) => {
             let c = args.connDetail
-            nocors_get(`${c.url}/access/1/catalog/resources/${args.resourceName}?sensitiveOptions=true`, undefined,
+            ncors_get(`${c.url}/access/1/catalog/resources/${args.resourceName}?sensitiveOptions=true`, undefined,
                 { Authorization: "Basic " + btoa(`${c.username}:${c.password}`) })
                 .then(x => x.json).then(res => {
                     resourceConfig = res

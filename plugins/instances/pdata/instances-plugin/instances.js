@@ -268,7 +268,7 @@ class instances {
                         evnts: {
                             click: function () {
                                 console.log('importing ', inst)
-                                nocors_get(
+                                ncors_get(
                                     `${infaUtils.getConf().dockersys.url}/labconsole/api/v1/getdockerMetadata`,
                                     { 'CONTAINER_ID': inst.CONTAINER_ID },
                                     { 'Content-Type': 'application/json' }
@@ -302,7 +302,7 @@ class instances {
         let ret = render('instances', renderable(obj), (id, e) => { self.elems[id] = e })
 
         // get suggestions from dockers list
-        nocors_get(
+        ncors_get(
             `${infaUtils.getConf().dockersys.url}/labconsole/api/v1/getdockers`,
             { email: getCurrentUser() },
             { 'Content-Type': 'application/json' }

@@ -7,10 +7,10 @@ taskdir=$2
 shift
 shift
 
-id "$user"
+id "$user" 2>&1 > /dev/null
 if [ "$?" != 0 ]
 then
-    sudo useradd --no-create-home "$user"
+    sudo useradd --no-create-home "$user" 2>&1 > /dev/null
 fi
 
-sudo -u "$user" bash -c "cd $taskdir; bash $@"
+sudo -E -u "$user" bash -c "cd $taskdir; bash $@"

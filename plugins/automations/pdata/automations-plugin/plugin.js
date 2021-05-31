@@ -1178,7 +1178,7 @@ class WfManager {
     runWf() {
         let runnableWf = this.wfBuilder.getRunnableWf()
         console.log(runnableWf)
-        infaUtils.cposta(`/wf/${getCurrentUser()}`, runnableWf, { 'Content-Type': 'application/json' }).then(() => this.listJobs())
+        infaUtils.cposta(`/wf`, runnableWf, { 'Content-Type': 'application/json' }).then(() => this.listJobs())
     }
 
     openJob(job_id) {

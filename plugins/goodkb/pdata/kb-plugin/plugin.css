@@ -1,0 +1,10 @@
+.goodkb-ed-input {
+    width: 80%;
+    margin: 5px;
+    display: block;
+}
+
+.goodkb-title, .goodkb-url {
+    display: block;
+    padding: 5px;
+}

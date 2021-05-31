@@ -1,0 +1,13 @@
+{
+    "name": "goodkb",
+    "jsPaths": [
+        "kb-plugin/plugin.js",
+        "/config.js",
+        "/infautils.js"
+    ],
+    "cssPaths": [
+        "kb-plugin/plugin.css"
+    ],
+    "version": 0,
+    "editApprovalNeeded": false
+}

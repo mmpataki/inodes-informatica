@@ -1,0 +1,152 @@
+.edcresconfig-input, .edcresconfig-button, .edcresconfig-comment {
+    width: 65%;
+    margin: 5px;
+    display: block
+}
+
+.edcresconfig-tree-item {
+    padding-left: 20px;
+}
+
+.edcresconfig-scanner-disabled {
+    background-color: lightgrey;
+}
+
+.edcresconfig-label-full-bkp, .edcresconfig-label-upload-xdocs, .edcresconfig-label-res-config {
+    background-color:#eaeaea;
+    padding: 10px;
+    display: inline-block;
+    margin-right: 1px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.edcresconfig-inputs-res-config, .edcresconfig-inputs-upload-xdoc, .edcresconfig-inputs-full-bkp {
+    display: none;
+    background-color: #fafafa;
+    padding: 10px;
+}
+
+.edcresconfig-input-res-config, .edcresconfig-input-upload-xdoc, .edcresconfig-input-full-bkp {
+    display: none;
+}
+
+.edcresconfig-input-res-config:checked ~ .edcresconfig-inputs-res-config, .edcresconfig-input-upload-xdoc:checked ~ .edcresconfig-inputs-upload-xdoc, .edcresconfig-input-full-bkp:checked ~ .edcresconfig-inputs-full-bkp {
+    display: block;
+}
+
+.edcresconfig-input-res-config:checked ~ .edcresconfig-label-res-config, .edcresconfig-input-upload-xdoc:checked ~ .edcresconfig-label-upload-xdocs, .edcresconfig-input-full-bkp:checked ~ .edcresconfig-label-full-bkp {
+    background-color: #cacaca;
+}
+
+.inst-search-result-key, .inst-search-result-value {
+    display: inline-block;
+    padding: 2px 5px;
+}
+.inst-search-result-key {
+    font-style: italic;
+}
+
+.inst-search-result-value {
+    font-weight: bold;
+}
+
+.inst-search-result-tags {
+    padding: 2px 5px;
+}
+
+.inst-searchresult-tag {
+    background-color: rgb(37, 154, 232);
+    padding: 2px 5px;
+    color: white;
+    border-radius: 5px;
+}
+
+.inst-search-result-container {
+    display: inline-block;
+    padding: 10px;
+    margin: 5px;
+    background-color: #eee;
+    border-radius: 10px;
+}
+
+.inst-search-result-container:hover {
+    background-color: #ddd;
+}
+
+.res-search-result-row > td, .res-search-result-row > th {
+    padding: 3px 5px;
+}
+.res-search-result-row > th {
+    text-align: left;
+}
+.res-search-result-row:hover {
+    background: #eee;
+}
+
+.resource-import-detail-kvp {
+    display: inline-block;
+}
+
+.resource-import-detail-key {
+    margin-right: 5px;
+}
+
+.resource-import-detail-value {
+    
+}
+
+.resource-import-detail-scannerids {
+    padding: 10px;
+}
+
+.resource-import-detail-scannerid {
+    padding: 3px;
+}
+
+.resource-import-detail-features {
+    padding: 0px 10px;
+}
+
+.resource-import-detail-scannerids {
+    display: none;
+}
+.resource-import-detail-pick-xdocs:checked ~ .resource-import-detail-scannerids {
+    display: block;
+}
+
+/* xdocs upload */
+.xdocs-upload-story-inp, .xdocs-upload-story-inp, .xdocs-upload-story-file-path {
+    display: block;
+    margin: 5px 10px;
+}
+
+/* summary storyboard */
+.summary-story-xdoc-link, .summary-story-scanner-config-option {
+    display: block;
+    margin-left: 40px;
+}
+
+.summary-story-scanner-config-options {
+    display: none;
+}
+
+.summary-story-scanner-config {
+    margin-left: 40px;
+}
+
+.summary-story-kvp {
+    display: block;
+}
+
+.summary-story-status {
+    display: block;
+    color: green;
+    margin: 20px 0px;
+}
+
+/* manual input */
+.instance-selection-story-input {
+    display: block;
+    width: 60%;
+}

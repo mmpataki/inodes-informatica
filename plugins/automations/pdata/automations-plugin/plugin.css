@@ -1,0 +1,391 @@
+.automation-name-and-desc-container > input, .automation-name-and-desc-container > textarea {
+    display: block;
+    margin: 5px;
+    width: 80%;
+}
+
+.automation-name-and-desc-types > input {
+    margin: 5px 5px 5px 10px;
+}
+
+.automation-i-and-s-input-spec > input, .automation-i-and-s-input-spec > select {
+    margin-right: 10px;
+}
+
+.automation-i-and-s-input-spec > input {
+    min-width: 100px;
+}
+
+.automation-i-and-s-inputs {
+    display: block;
+    width: 100%;
+    margin: 10px 0px 20px 20px;
+}
+
+.automation-i-and-s-inputs > textarea, .automation-i-and-s-inputs > input {
+    width: 90%;
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.automation-i-and-s-input-spec-remover {
+    border-radius: 50%;
+    padding: 0px 6px;
+    border: none;
+    background-color: black;
+    color: white;
+    margin-right: 10px;
+}
+
+.automation-i-and-s-input-spec-remover:hover {
+    background-color: red;
+    color: white;
+}
+
+.wfbldr-graph {
+    padding: 30px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-top: 30px;
+}
+
+.wfbldr-graph > .wfbldr-wf-actions {
+    top: 0px;
+}
+
+.s-and-s-btn-content-and-actions {
+    display: flex;
+    width: auto;
+    position: relative;
+}
+
+.s-and-s-btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    border: solid 1px lightgray;
+}
+
+.s-and-s-btn-container:hover {
+    border: solid 1px gray;
+}
+
+.automation-sr-container-selected {
+    background-color: rgb(52, 196, 113, 0.3);
+}
+
+.s-and-s-btn-lnk {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
+
+.wfbldr-new-task-lnk:hover {
+    color: green;
+}
+
+.s-and-s-btn-searchpane {
+    display: none;
+}
+
+.s-and-s-btn-search-box {
+    min-width: 60%;
+    margin-left: 10px;
+}
+
+.s-and-s-btn-search-result-container {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+    max-width: fit-content;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.s-and-s-btn-search-result-container:hover {
+    background-color: #e5e5e5;
+}
+
+.s-and-s-btn-actions {
+    display: none;
+    visibility: hidden;
+    align-items: start;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.s-and-s-btn-content {
+    padding: 10px 10px;
+}
+
+.s-and-s-btn-action {
+    font-size: 0.9em;
+    cursor: pointer;
+    padding: 2px 5px;
+    background-color: #f0f0f0;
+    margin: 2px 0px;
+}
+
+.s-and-s-btn-action:hover {
+    background-color: #e0e0e0;
+}
+
+.wfbldr-tbbtn {
+    background-color: #f0f0f0;
+    font-size: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 6px;
+}
+.wfbldr-tbbtn:hover {
+    background-color: #e0e0e0;
+}
+.wfbldr-task-actions {
+    visibility: hidden;
+}
+.wfbldr-task-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.wfbldr-task-container:hover > .wfbldr-task-actions, .wfbldr-task-and-actions:hover > .wfbldr-task-actions {
+    visibility: visible;
+}
+
+.a-i-s-r-key {
+    font-style: italic;
+    margin-right: 5px;
+}
+
+.a-i-s-r-value {
+    font-weight: bold;
+}
+
+.a-i-s-r-tags {
+    padding: 2px 5px;
+}
+
+.a-i-s-r-tag {
+    background-color: rgb(37, 154, 232);
+    padding: 2px 5px;
+    color: white;
+    border-radius: 5px;
+}
+
+.wfbldr-props-table {
+    width: 100%;
+    text-align: center;
+}
+
+.wfbldr-propseditor {
+    margin-top: 20px;
+}
+
+.wfbldr-props-row > td {
+    padding: 0px;
+}
+
+.wfbldr-task-container-uninit {
+    border: dashed 1px orangered;
+}
+
+.s-and-s-btn-content-and-actions:hover > .s-and-s-btn-actions {
+    visibility: visible;
+}
+
+.wfbldr-wf-actions {
+    position: absolute;
+    top: 30px;
+    right: 10px;
+}
+
+.wfbldr-wf-action {
+    margin: 0px 2px;
+    padding: 5px 8px;
+}
+
+.wfbldr-wf-action-run {
+    color: green;
+    z-index: 1;
+}
+
+.wfbldr-wf-action-stop {
+    color: red;
+}
+
+.wfbldr-jobs-view {
+    position: relative;
+    padding-top: 30px;
+}
+
+.wfbldr-jobs-view > .wfbldr-wf-actions {
+    top: 0px;
+}
+
+.wfmanager-panel-switcher-btn {
+    display: none;
+}
+
+.wfmanager-panel-switcher-btn + label {
+    border: solid 1px lightgray;
+    font-size: 0.8em;
+    padding: 10px 10px;
+    display: inline-block;
+    border-radius: 5px;
+    border-bottom: none;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.wfmanager-panel-switcher-btn:checked + label {
+    font-weight: bold;
+}
+
+.wfmanager-actions-panel {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 1;
+}
+
+.wfmanager-panel-title-bar {
+    position: relative;
+}
+
+.wfmanager-jobs-ui {
+    position: relative;
+    padding: 20px;
+}
+
+.jobs-ui-actions {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.view-job-graph {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+    align-items: center;
+}
+
+.view-job-task-container {
+    padding: 15px;
+    border-radius: 5px;
+    margin: 5px 0px;
+}
+
+.view-job-completed {
+    background-color: rgb(52, 196, 113, 0.3);
+}
+
+.view-job-queued {
+    background-color: aliceblue;
+}
+
+.view-job-running {
+    background-color: lightskyblue;
+}
+
+.view-job-failed {
+    background-color: rgb(255, 10, 30, 0.3);
+}
+
+.view-job-cancelled {
+    background-color: #e0e0e0;
+}
+
+.view-job-log-links {
+    margin-left: 5px;
+}
+
+.view-job-logs {
+    overflow: auto;
+    height: 400px;
+    width: calc(100% - 20px);
+    margin: auto;
+    border: solid 1px gray;
+    padding: 5px;
+}
+
+.view-job-log-container {
+    display: none;
+}
+
+.view-job-actions {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.view-job-steps {
+    padding: 20px;
+}
+
+.view-job-task-step-name {
+    margin-left: 10px;
+    font-weight: bolder;
+}
+
+.view-job-task-steps {
+    margin: 10px 20px;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.view-job-task-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.view-job-task-container-parent {
+    display: flex;
+    align-items: center;
+}
+
+.view-job-task-container-parent:hover > .view-job-task-log-links {
+    visibility: visible;
+}
+
+.view-job-task-name {
+    font-weight: bolder;
+}
+
+.view-job-task-log-links {
+    visibility: hidden;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.wfbldr-graph-container {
+    max-height: 400px;
+    overflow: auto;
+}
+
+.wfbldr-wf-editor, .wfmanager-jobs-ui, .wfmanager-view-job {
+    border: dotted 1px black;
+    min-height: 100px;
+}
+
+.automation-i-and-s-wbfbldr {
+    padding: 10px 20px;
+}
+
+.automation-sr-container {
+    display: flex;
+    align-items: center;
+}
+
+.automation-sr-ico {
+    margin: 5px;
+    margin-right: 10px;
+}

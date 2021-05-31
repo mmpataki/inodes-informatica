@@ -1,0 +1,12 @@
+{
+    "name": "edcresconfig",
+    "jsPaths": [
+        "edc-resource-config-plugin/resource-config.js",
+        "/config.js",
+        "/infautils.js"
+    ],
+    "cssPaths": [
+        "edc-resource-config-plugin/resource-config.css"
+    ],
+    "version": 0
+}

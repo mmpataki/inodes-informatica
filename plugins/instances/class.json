@@ -1,0 +1,13 @@
+{
+  "name": "instances",
+  "jsPaths": [
+    "./instances-plugin/instances.js",
+    "/config.js",
+    "/infautils.js"
+  ],
+  "cssPaths": [
+    "./instances-plugin/instances.css"
+  ],
+  "version": 1,
+  "permissionNeeded": true
+}

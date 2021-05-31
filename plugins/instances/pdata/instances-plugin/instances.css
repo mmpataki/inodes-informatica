@@ -1,0 +1,158 @@
+.instances-ip-addr, .instances-urls-label, .instances-add-url, .instances-install-loc, .instances-app-tag, .instances-app-url, .instances-app-user, .instances-app-password , .instances-box-user ,.instances-box-password {
+    margin: 3px;
+}
+
+.instances-manual-instance-entry, .instances-app-urls, .instances-add-url, .instances-suggestions {
+    margin-left: 20px;
+}
+
+.instances-urls-label {
+    display: block;
+    margin-top: 5px;
+}
+
+.instances-remove-url {
+
+}
+
+.instances-card-urls {
+
+}
+
+.instances-card-urltag {
+
+}
+
+.instances-card-url {
+
+}
+
+.instances-urlstatus-refresher {
+    padding: 3px;
+    border-radius: 50%;
+    color: lightgray;
+    cursor: pointer;
+}
+
+.instances-urltag:hover .instances-urlstatus-refresher {
+    color: black;
+}
+
+.instances-card-boxcreds, .instances-card-appcreds {
+    margin: 5px;
+    margin-right: 10px;
+    font-style: italic;
+    color: grey;
+}
+
+.instances-card-boxusername, .instances-card-boxpassword, .instances-card-appusername, .instances-card-apppassword {
+    font-weight: bold;
+}
+
+.instances-card-boxlogin {
+    display: block;
+    padding: 2px;
+    border-bottom: solid 1px gray;
+}
+
+.instances-card-metadata-container {
+}
+
+.instances-card-url-container {
+    margin-top: 10px;
+}
+
+.instances-card-metatag {
+    font-style: italic;
+    color: gray;
+    margin: 5px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+
+.instances-suggestions {
+    
+}
+
+.docker-text {
+    display: block;
+    padding: 3px;
+}
+
+.docker-instance {
+    border: solid 3px green;
+    border-radius: 5px;
+    width: 300px;
+    padding: 10px;
+    margin: 15px;
+}
+
+.instances-urltag {
+    padding: 5px;
+    border-radius: 8px;
+    border: solid 1px gray;
+    display: inline-block;
+    margin: 1px 2px;
+    text-transform: lowercase;
+    background-color: lightyellow;
+}
+
+.instances-urltag > a {
+    color: orange;
+}
+
+.instances-urltag a::after {
+    content: url('./images/outlink.svg');
+    margin-left: 3px;
+}
+
+.instances-urltag a {
+    font-style: italic;
+}
+
+.instances-icons {
+    float: right;
+    top: 30px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+}
+
+.instances-details {
+    float: left;
+    width: 90%;
+}
+
+.instance-up {
+    background-color: rgb(52, 196, 113, 0.13);
+    border: none;
+    padding: 5px 15px;
+}
+
+.instance-up > a, .instance-up > a:link, .instance-up > a:visited {
+    color: #007700;
+}
+
+.instance-down {
+    background-color: #f5f5f5;
+    border: none;
+    padding: 5px 15px;
+    margin-right: 5px;
+}
+
+.instance-down > a, .instance-down > a:link, .instance-down > a:visited {
+    color: #999999;
+}
+
+.instance-down, .instance-up {
+    border: solid 2px transparent;
+}
+
+.instance-up:hover {
+    border: solid 2px rgb(52, 196, 113, 0.2);
+}
+
+.instance-down:hover {
+    border: solid 2px #eaeaea;
+}

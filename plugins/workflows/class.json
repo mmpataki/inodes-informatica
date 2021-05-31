@@ -1,0 +1,12 @@
+{
+  "name": "workflows",
+  "jsPaths": [
+    "automations-plugin/plugin.js",
+    "/config.js",
+    "/infautils.js"
+  ],
+  "cssPaths": [
+    "automations-plugin/plugin.css"
+  ],
+  "version": 0
+}

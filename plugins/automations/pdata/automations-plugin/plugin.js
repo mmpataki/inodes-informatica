@@ -65,13 +65,10 @@ let ______inputTypes = {
         }
     },
     select: {
-        valuepicker: (iSpec, currentValue, inputChanged) => {
-            let vals = eval(`(${iSpec.type.value})()`), key = iSpec.name
-            if (!vals || vals.length === 0) {
-                vals = []
-                console.error('no values are found from the generator function')
-            }
-            return {
+        valuepicker: (iSpec, currentValue, inputChanged, otherInputs) => {
+            let val = eval(`(${iSpec.type.value})(otherInputs)`), key = iSpec.name
+
+            let ele = render('', {
                 ele: 'select',
                 classList: `ed-input`,
                 styles: { width: 'calc(100% - 12px)' },
@@ -81,14 +78,27 @@ let ______inputTypes = {
                     change: function () { inputChanged(key, this.value) },
                     rendered: (e) => { inputChanged(key, e.value) }
                 }
-            }
+            })
+
+            Promise.resolve(val).then(vals => {
+                if (!vals || vals.length === 0) {
+                    vals = []
+                    console.error('no values are found from the generator function')
+                }
+                ele.innerHTML = ''
+                vals.forEach(x => {
+                    render('', { ele: 'option', text: x, attribs: { value: x } }, () => 0, ele)
+                })
+            })
+
+            return { ele, preBuilt: true }
         },
         renderInputSpecInputter: (ele, currentValue) => {
             ele.innerHTML = ''
             render('automation-i-and-s', {
                 ele: 'textarea',
                 label: 'function: ',
-                attribs: { value: currentValue || "", rows: 4 },
+                attribs: { value: currentValue || "() => {\n\treturn [1,2,3]\n}", rows: 4 },
                 styles: { display: 'inline-block', 'vertical-align': 'middle', 'margin': '2px 10px 2px 0px', width: '200px' }
             }, () => 1, ele)
         },
@@ -100,9 +110,9 @@ let ______inputTypes = {
 
 class ConfigUtil {
 
-    getValuePicker(iSpec, currentValue, inputChanged) {
+    getValuePicker(iSpec, currentValue, inputChanged, otherInputs) {
         let IT = ______inputTypes;
-        return IT[iSpec.type.name].valuepicker(iSpec, currentValue, inputChanged)
+        return IT[iSpec.type.name].valuepicker(iSpec, currentValue, inputChanged, otherInputs)
     }
 
     renderInputSpecInputter(type, ele, currentValue) {
@@ -412,7 +422,7 @@ class workflows {
                                 'Value': {
                                     vFunc: (iSpec) => {
                                         if (iSpec.name in extraInputs) {
-                                            return cutil.getValuePicker(iSpec, this.inputs[iSpec.name], inputChanged)
+                                            return cutil.getValuePicker(iSpec, this.inputs[iSpec.name], inputChanged, obj.inputs)
                                         }
                                         return {
                                             ele: 'select',
@@ -902,7 +912,7 @@ class PropsManager {
                 'Input property': { vFunc: (iSpec) => iSpec.label || iSpec.name },
                 'Value': {
                     vFunc: (iSpec) => {
-                        return cutil.getValuePicker(iSpec, this.inputs[iSpec.name], inputChanged)
+                        return cutil.getValuePicker(iSpec, this.inputs[iSpec.name], inputChanged, obj.inputs)
                     }
                 }
             }

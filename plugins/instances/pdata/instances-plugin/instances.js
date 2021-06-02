@@ -608,7 +608,7 @@ class instances {
     }
 
     postDisplay(items) {
-        items.forEach(item => {
+        items.filter(item => item.readState == 'CAN_READ').forEach(item => {
             let postItems = [];
             JSON.parse(item.content).urls.forEach(u => {
                 postItems.push({

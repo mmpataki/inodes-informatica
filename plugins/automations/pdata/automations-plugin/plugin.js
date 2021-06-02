@@ -72,8 +72,6 @@ let ______inputTypes = {
                 ele: 'select',
                 classList: `ed-input`,
                 styles: { width: 'calc(100% - 12px)' },
-                children: vals.map(x => ({ ele: 'option', text: x, attribs: { value: x } })),
-                attribs: { value: currentValue || vals[0] },
                 evnts: {
                     change: function () { inputChanged(key, this.value) },
                     rendered: (e) => { inputChanged(key, e.value) }
@@ -89,6 +87,7 @@ let ______inputTypes = {
                 vals.forEach(x => {
                     render('', { ele: 'option', text: x, attribs: { value: x } }, () => 0, ele)
                 })
+                ele.value = currentValue || vals[0]
             })
 
             return { ele, preBuilt: true }

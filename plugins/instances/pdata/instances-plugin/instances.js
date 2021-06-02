@@ -269,7 +269,7 @@ class instances {
                             click: function () {
                                 console.log('importing ', inst)
                                 ncors_get(
-                                    `${infaUtils.getConf().dockersys.url}/labconsole/api/v1/getdockerMetadata`,
+                                    `${infaUtils.getConfig().dockersys.url}/labconsole/api/v1/getdockerMetadata`,
                                     { 'CONTAINER_ID': inst.CONTAINER_ID },
                                     { 'Content-Type': 'application/json' }
                                 ).then(resp => {
@@ -303,7 +303,7 @@ class instances {
 
         // get suggestions from dockers list
         ncors_get(
-            `${infaUtils.getConf().dockersys.url}/labconsole/api/v1/getdockers`,
+            `${infaUtils.getConfig().dockersys.url}/labconsole/api/v1/getdockers`,
             { email: getCurrentUser() },
             { 'Content-Type': 'application/json' }
         ).then((resp) => {

@@ -1,160 +1,12 @@
 class instances {
 
-    currentUrls = {}
-
     constructor() {
-        this.elems = {}
+        this.currentUrls = {}
     }
 
-    getEditor(obj) {
-        let self = this;
-        let APP_URLS = function (url) {
-            return {
-                ele: "div",
-                classList: "app-urls",
-                attribs: {},
-                children: [
-                    {
-                        ele: "input",
-                        classList: "app-tag",
-                        attribs: {
-                            placeholder: "tag / name",
-                            width: "100px",
-                            value: url ? url.tag : ""
-                        }
-                    },
-                    {
-                        ele: "input",
-                        classList: "app-url",
-                        attribs: {
-                            placeholder: "url",
-                            value: url ? url.url : ""
-                        }
-                    },
-                    {
-                        ele: "button",
-                        classList: "remove-url",
-                        text: "-",
-                        evnts: {
-                            click: function (e) {
-                                e.target.parentNode.remove()
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-        let renderable = function (obj) {
-            if (obj) {
-                obj = JSON.parse(obj.content)
-            }
-            return {
-                ele: "div",
-                iden: "app-editor",
-                attribs: { classList: "pane" },
-                children: [
-                    {
-                        ele: 'h3',
-                        text: 'Your dockers'
-                    },
-                    {
-                        ele: 'div',
-                        iden: 'suggestions',
-                        classList: 'suggestions',
-                        text: 'Your dockers will appear here'
-                    },
-                    {
-                        ele: 'h3',
-                        text: 'Manual instance entry'
-                    },
-                    {
-                        ele: "div",
-                        classList: 'manual-instance-entry',
-                        children: [
-                            {
-                                ele: "div",
-                                children: [
-                                    {
-                                        ele: "input",
-                                        classList: "app-user",
-                                        attribs: {
-                                            placeholder: "app username",
-                                            value: obj ? obj.appusername : ""
-                                        }
-                                    },
-                                    {
-                                        ele: "input",
-                                        classList: "app-password",
-                                        attribs: {
-                                            placeholder: "app password",
-                                            value: obj ? obj.apppassword : ""
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                ele: "div",
-                                children: [
-                                    {
-                                        ele: "input",
-                                        classList: "box-user",
-                                        attribs: {
-                                            placeholder: "box username",
-                                            value: obj ? obj.boxusername : ""
-                                        }
-                                    },
-                                    {
-                                        ele: "input",
-                                        classList: "box-password",
-                                        attribs: {
-                                            placeholder: "box password",
-                                            value: obj ? obj.boxpassword : ""
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                ele: "div",
-                                children: [
-                                    {
-                                        ele: "input",
-                                        classList: "ip-addr",
-                                        attribs: {
-                                            placeholder: "ip addr",
-                                            value: obj ? obj.ipaddr : ""
-                                        }
-                                    },
-                                    {
-                                        ele: "input",
-                                        classList: "install-loc",
-                                        attribs: {
-                                            placeholder: "install location",
-                                            value: obj ? obj.installloc : ""
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                ele: "span",
-                                classList: "urls-label",
-                                text: "URLs"
-                            },
-                            ...(obj ? obj.urls.map(u => APP_URLS(u)) : []),
-                            {
-                                ele: "button",
-                                text: "Add URL",
-                                classList: "add-url",
-                                evnts: {
-                                    click: function (e) {
-                                        e.target.parentNode.insertBefore(render('instances', APP_URLS()), e.target);
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
+    getEditor(doc, obj) {
+
+        let klass = this;
 
         let parseDockerApiOutputV1 = function (resp) {
             let O = {};
@@ -237,117 +89,277 @@ class instances {
             }
         }
 
-        let docker_instance = function (inst) {
-            return {
-                ele: 'div',
-                classList: 'instance',
-                children: [
-                    {
-                        ele: 'span',
-                        classList: 'text',
-                        text: inst.CONTAINER_ID
-                    },
-                    {
-                        ele: 'span',
-                        classList: 'text',
-                        text: inst.DESCRIPTION
-                    },
-                    {
-                        ele: 'span',
-                        classList: 'text',
-                        text: `tag: ${inst.PVERSION}`
-                    },
-                    {
-                        ele: 'span',
-                        classList: 'text',
-                        text: `Case# : ${inst.CASENUM}`
-                    },
-                    {
-                        ele: 'button',
-                        text: 'Import',
-                        evnts: {
-                            click: function () {
-                                console.log('importing ', inst)
-                                ncors_get(
-                                    `${infaUtils.getConfig().dockersys.url}/labconsole/api/v1/getdockerMetadata`,
-                                    { 'CONTAINER_ID': inst.CONTAINER_ID },
-                                    { 'Content-Type': 'application/json' }
-                                ).then(resp => {
-                                    resp = JSON.parse(JSON.parse(resp.response).data[0].META_DATA)
-                                    let parseFunctions = [parseDockerApiOutputV1, parseDockerApiOutputV2]
+        function InputTypeSelectionStory(args) {
 
-                                    parseFunctions.forEach(f => {
-                                        try {
-                                            self.importedContent = f(resp);
-                                        } catch (error) {
-                                            console.error(error)
-                                            console.log(`failed to parse using : ${f}`)
-                                        }
-                                    })
+            this.title = () => 'Pick a input type'
 
-                                    console.log(self.importedContent)
-                                    if (self.importedContent) {
-                                        inodes.post()
-                                    } else {
-                                        showError('Cannot parse the docker API response. Connect to admin to fix this, Till then use the manual entry')
-                                    }
-                                })
+            this.tell = function () {
+                this.ele = render('inp-type-select', {
+                    ele: 'div',
+                    children: [
+                        {
+                            ele: 'input',
+                            classList: 'input-full-bkp',
+                            postlabel: 'Import a docker',
+                            lblClass: 'label-full-bkp',
+                            attribs: {
+                                type: 'radio',
+                                name: 'input-type',
+                                value: 'docker',
+                                checked: true
+                            }
+                        },
+                        { ele: 'br' },
+                        {
+                            ele: 'input',
+                            classList: 'input-res-config',
+                            postlabel: 'Manually enter the instance details',
+                            lblClass: 'label-res-config',
+                            attribs: {
+                                type: 'radio',
+                                name: 'input-type',
+                                value: 'manual'
                             }
                         }
-                    }
-                ]
+                    ]
+                })
+                return this.ele;
+            }
+
+            this.nextStoryClass = function () {
+                let funcs = { 'docker': DockerSelectionStory, 'manual': ManualConfigStory }
+                return funcs[this.ele.querySelector("input[type='radio']:checked").value]
+            }
+
+            this.moral = () => ({ option: this.ele.querySelector("input[type='radio']:checked").value })
+
+            this.isCompleted = function () {
+                return true
             }
         }
 
-        let ret = render('instances', renderable(obj), (id, e) => { self.elems[id] = e })
+        class DockerSelectionStory {
 
-        // get suggestions from dockers list
-        ncors_get(
-            `${infaUtils.getConfig().dockersys.url}/labconsole/api/v1/getdockers`,
-            { email: getCurrentUser() },
-            { 'Content-Type': 'application/json' }
-        ).then((resp) => {
-            let instances = JSON.parse(resp.response).data
-            instances.forEach(inst => {
-                self.elems.suggestions.appendChild(render('docker', docker_instance(inst), x => x))
-            })
-            if (instances.length == 0) {
-                self.elems.suggestions.innerHTML += 'Ooops.. looks like you don\'t have any active docker instances.'
+            constructor() {
+
+                this.title = () => 'Pick a docker'
+
+                this.tell = () => {
+
+                    let uniqid = Math.random(), self = this
+                    let docker_instance = (inst) => {
+                        return {
+                            ele: 'label', classList: 'instance', attribs: { docker: inst }, children: [
+                                { ele: 'input', attribs: { type: 'radio', name: `docker-${uniqid}` } },
+                                { ele: 'span', classList: 'text', text: inst.CONTAINER_ID },
+                                { ele: 'span', classList: 'text', text: inst.DESCRIPTION },
+                                { ele: 'span', classList: 'text', text: `tag: ${inst.PVERSION}` },
+                                { ele: 'span', classList: 'text', text: `Case# : ${inst.CASENUM}` }
+                            ],
+                            evnts: { click: function () { self.sdocker = this.docker } }
+                        }
+                    }
+
+                    let ret = this.suggestions = render('instances', { ele: 'div', classList: 'suggestions' }, (id, ele) => this[id] = ele)
+
+                    callWithWaitUI(ret, (done, setText) => {
+                        setText('Fetching your dockers list')
+                        ncors_get(`${infaUtils.getConfig().dockersys.url}/labconsole/api/v1/getdockers`, { email: app.currentUid() }, { 'Content-type': 'application/json' })
+                            .then(resp => resp.json.data).then(instances => {
+                                ret.innerHTML = instances.length == 0 ? 'Ooops.. looks like you don\'t have any active docker instances.' : ''
+                                instances.forEach(inst => ret.appendChild(render('docker', docker_instance(inst), x => x)))
+                            }).finally(_ => done())
+                    })
+                    return ret
+                }
+
+                this.isCompleted = () => {
+                    return this.sdocker && 1
+                }
+
+                this.getErrMsg = () => {
+                    return 'Select a instance'
+                }
+
+                this.nextStoryClass = () => SummaryStory
+
+                this.moral = () => ({ ...this.docker })
+
             }
-        })
 
-        return ret;
+            preDestroy() {
+                let prom = ncors_get(
+                    `${infaUtils.getConfig().dockersys.url}/labconsole/api/v1/getdockerMetadata`,
+                    { 'CONTAINER_ID': this.sdocker.CONTAINER_ID },
+                    { 'Content-Type': 'application/json' }
+                ).then(resp => JSON.parse(resp.json.data[0].META_DATA)).then(resp => {
+
+                    let parseFunctions = [parseDockerApiOutputV1, parseDockerApiOutputV2]
+
+                    parseFunctions.forEach(f => {
+                        try {
+                            this.docker = f(resp);
+                        } catch (error) {
+                            console.error(error)
+                            console.log(`failed to parse using : ${f.name}`)
+                        }
+                    })
+                    if (!this.docker) {
+                        showError('Cannot parse the docker API response. Connect to admin to fix this, Till then use the manual entry')
+                    }
+                })
+                callWithWaitUI(this.suggestions, (d, s) => {
+                    s('Fetching complete docker details')
+                    prom.finally(_ => d())
+                })
+                return prom
+            }
+        }
+
+        class ManualConfigStory {
+            title() { return 'Fill in all the details of the instance' }
+            tell() {
+                let kvpairtemplate = function (keyname, valuename, key, value, jsonKeyName, jsonValueName) {
+                    return {
+                        ele: "div", classList: "kvp", children: [
+                            { ele: "input", classList: "kvp-k", attribs: { placeholder: keyname, width: "100px", value: key, keyName: jsonKeyName } },
+                            { ele: "input", classList: "kvp-v", attribs: { placeholder: valuename, value, keyName: jsonValueName } },
+                            { ele: "button", text: "-", evnts: { click: function (e) { e.target.parentNode.remove() } } }
+                        ]
+                    }
+                }
+                let urlpairtemplate = (u) => kvpairtemplate("tag / name", "url", u ? u.tag : "", u ? u.url : "", "tag", "url")
+                let metapairtemplate = (m) => kvpairtemplate("key", "value", m ? m.key : "", m ? m.value : "", "key", "value")
+                let renderable = function (obj) {
+                    return {
+                        ele: "div",
+                        attribs: { classList: "pane" },
+                        children: [
+                            {
+                                ele: "div", iden: 'manInput', classList: 'manual-instance-entry', children: [
+                                    {
+                                        ele: "div", classList: 'ad-inps', children: [
+                                            { ele: "input", classList: "ad-inp", label: "app username:", value: obj ? obj.appusername : "" },
+                                            { ele: "input", classList: "ad-inp", label: "app password:", value: obj ? obj.apppassword : "" }
+                                        ]
+                                    },
+                                    {
+                                        ele: "div", classList: 'ad-inps', children: [
+                                            { ele: "input", classList: "ad-inp", label: "box username:", value: obj ? obj.boxusername : "" },
+                                            { ele: "input", classList: "ad-inp", label: "box password:", value: obj ? obj.boxpassword : "" }
+                                        ]
+                                    },
+                                    {
+                                        ele: "div", classList: 'ad-inps', children: [
+                                            { ele: "input", classList: "ad-inp", label: "host / ip addr :", value: obj ? obj.ipaddr : "" },
+                                            { ele: "input", classList: "ad-inp", label: "install location:", value: obj ? obj.installloc : "" }
+                                        ]
+                                    },
+                                    {
+                                        ele: 'div', classList: 'urlnmeta', children: [
+                                            {
+                                                ele: 'div', iden: 'urlInput', children: [
+                                                    { ele: "b", classList: "urls-label", text: "URLs" },
+                                                    ...(obj ? obj.urls.map(u => urlpairtemplate(u)) : []),
+                                                    {
+                                                        ele: "button", text: "Add URL", classList: "add-url", evnts: {
+                                                            click: function () { this.parentNode.insertBefore(render('instances', urlpairtemplate()), this) }
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                ele: 'div', iden: 'metaInput', children: [
+                                                    { ele: "b", classList: "urls-label", text: "Metadata" },
+                                                    ...((obj && obj.meta) ? obj.meta.map(m => metapairtemplate(m)) : []),
+                                                    {
+                                                        ele: "button",
+                                                        text: "Add key-value pair",
+                                                        classList: "add-url",
+                                                        evnts: {
+                                                            click: function () { this.parentNode.insertBefore(render('instances', metapairtemplate()), this) }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+                return render('instances', renderable(obj), (i, e) => this[i] = e)
+            }
+
+            nextStoryClass() { return SummaryStory }
+            moral() {
+                let inputs = this.manInput.getElementsByTagName('input');
+                let vals = [];
+                for (let i = 0; i < inputs.length; i++) {
+                    vals.push(inputs[i].value);
+                }
+                let ret = {
+                    appusername: vals[0], apppassword: vals[1],
+                    boxusername: vals[2], boxpassword: vals[3],
+                    ipaddr: vals[4], installloc: vals[5],
+                    urls: [],
+                    meta: []
+                };
+                let fill = (eleArr, arr) => {
+                    for (let i = 0; i < eleArr.length; i += 2) {
+                        let x = {};
+                        x[eleArr[i].keyName] = eleArr[i].value
+                        x[eleArr[i + 1].keyName] = eleArr[i + 1].value
+                        arr.push(x)
+                    }
+                }
+                fill(this.metaInput.getElementsByTagName('input'), ret.meta)
+                fill(this.urlInput.getElementsByTagName('input'), ret.urls)
+                console.log(ret)
+                return ret
+            }
+
+            isCompleted() {
+                return true
+            }
+            getErrMsg() {
+                return 'Choose a file and version'
+            }
+        }
+
+        class SummaryStory {
+            constructor(arg) {
+                this.title = () => 'Awesome! now add some tags and publish'
+
+                this.tell = () => {
+                    return render('instances', {
+                        ele: 'div', styles: { display: 'flex', position: 'relative' }, children: [
+                            { ele: klass.getCard({ id: Math.random() }, arg), preBuilt: true}
+                        ]
+                    })
+                }
+                this.moral = () => { return arg }
+            }
+        }
+
+        let ele = render('instances', { ele: 'div' });
+        this.storyTeller = new StoryTeller(ele);
+        let storyClass = obj ? ManualConfigStory : InputTypeSelectionStory;
+        this.storyTeller.openStory(storyClass, obj)
+        return ele;
     }
 
     getContent() {
-        if (this.importedContent) {
-            let x = this.importedContent;
-            this.importedContent = undefined;
-            return x;
+        let story = this.storyTeller.currentStory();
+        if (story && story.constructor.name == 'SummaryStory') {
+            return story.moral()
         }
-        let inputs = this.elems['app-editor'].getElementsByTagName('input');
-        let vals = [];
-        for (let i = 0; i < inputs.length; i++) {
-            vals.push(inputs[i].value);
-        }
-        let ret = {
-            appusername: vals[0],
-            apppassword: vals[1],
-            boxusername: vals[2],
-            boxpassword: vals[3],
-            ipaddr: vals[4],
-            installloc: vals[5],
-            urls: []
-        };
-        for (let i = 6; i < vals.length; i += 2) {
-            ret.urls.push({ tag: vals[i], url: vals[i + 1] })
-        }
-        return ret;
+        throw new Error('Please provide all inputs')
     }
 
-    getCard(obj) {
-        let objIden = obj.id
-        obj = JSON.parse(obj.content)
+    getCard(doc, obj) {
+        let objIden = doc.id
         let self = this;
         let CARD_META_URL = function (k, v, elem) {
             return {
@@ -590,6 +602,7 @@ class instances {
         }
         return [];
     }
+
     makeUrlId(id, tag) {
         return `url:${id}:${tag}`
     }

@@ -1,30 +1,21 @@
-.instances-ip-addr, .instances-urls-label, .instances-add-url, .instances-install-loc, .instances-app-tag, .instances-app-url, .instances-app-user, .instances-app-password , .instances-box-user ,.instances-box-password {
-    margin: 3px;
+.instances-app-urls {
+    margin-left: 20px;
 }
 
-.instances-manual-instance-entry, .instances-app-urls, .instances-add-url, .instances-suggestions {
-    margin-left: 20px;
+.instances-suggestions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+}
+
+.instances-add-url {
+    margin-left: 10px;
 }
 
 .instances-urls-label {
     display: block;
     margin-top: 5px;
-}
-
-.instances-remove-url {
-
-}
-
-.instances-card-urls {
-
-}
-
-.instances-card-urltag {
-
-}
-
-.instances-card-url {
-
 }
 
 .instances-urlstatus-refresher {
@@ -55,9 +46,6 @@
     border-bottom: solid 1px gray;
 }
 
-.instances-card-metadata-container {
-}
-
 .instances-card-url-container {
     margin-top: 10px;
 }
@@ -70,22 +58,17 @@
     text-align: right;
 }
 
-
-.instances-suggestions {
-    
-}
-
 .docker-text {
     display: block;
     padding: 3px;
 }
 
 .docker-instance {
-    border: solid 3px green;
+    border: solid 3px lightgray;
     border-radius: 5px;
     width: 300px;
     padding: 10px;
-    margin: 15px;
+    margin: 6px;
 }
 
 .instances-urltag {
@@ -155,4 +138,51 @@
 
 .instance-down:hover {
     border: solid 2px #eaeaea;
+}
+
+.instances-urlnmeta {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+.instances-urlnmeta > div {
+    display: inline-block;
+    flex-grow: 1;
+}
+
+.instances-kvp {
+    display: flex;
+    margin: 3px 20px 3px 10px;
+    align-items: center;
+}
+
+.instances-kvp > button {
+    height: max-content;
+}
+
+.instances-kvp-v {
+    flex-grow: 1;
+}
+
+.instances-kvp-k, .instances-kvp-v {
+    outline: none;
+}
+
+.instances-ad-inps {
+    display: flex;
+    align-items: center;
+}
+
+.instances-ad-inps > label {
+    min-width: 120px;
+}
+
+.instances-ad-inp {
+    flex-grow: 1;
+    margin: 5px 40px 5px 10px;
+}
+
+.instances-card {
+    flex-grow: 1;
 }

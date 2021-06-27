@@ -1,7 +1,6 @@
 class goodkb {
 
     getCard(obj) {
-        obj = JSON.parse(obj.content)
         let template = function(obj) {
             return {
                 ele: 'div',
@@ -29,9 +28,6 @@ class goodkb {
 
     getEditor(obj) {
         let self = this;
-        if(obj) {
-            obj = JSON.parse(obj.content);
-        }
         let renderable = function (obj) {
             return {
                 ele: "div",

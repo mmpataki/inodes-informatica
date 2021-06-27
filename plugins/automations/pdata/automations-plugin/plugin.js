@@ -136,8 +136,7 @@ let ____configutil = new ConfigUtil()
 
 class automations {
 
-    getCard(doc) {
-        let obj = JSON.parse(doc.content)
+    getCard(obj, doc) {
         return render('automation', {
             ele: 'div',
             classList: 'container',
@@ -147,7 +146,7 @@ class automations {
                 {
                     ele: 'button', text: 'run', styles: { 'display': 'inline-block', 'vertical-align': 'super', 'margin-left': '10px' }, evnts: {
                         click: () => {
-                            inodes.triggerSearch(`%applets #wfmanager !${doc.id}`)
+                            app.search(`%applets #wfmanager !${doc.id}`)
                         }
                     }
                 },
@@ -272,9 +271,6 @@ class automations {
             }
         }
 
-        if (obj) {
-            obj = JSON.parse(obj.content);
-        }
         let ele = render('automation-ed', { ele: 'div' }, (id, obj) => this[id] = obj);
         this.storyBoard = new StoryTeller(ele);
         this.storyBoard.openStory(NameAndDescriptionStory, obj);
@@ -293,8 +289,7 @@ class automations {
 
 class workflows {
 
-    getCard(doc) {
-        let obj = JSON.parse(doc.content)
+    getCard(obj, doc) {
         return render('automation', {
             ele: 'div',
             classList: 'container',
@@ -305,7 +300,7 @@ class workflows {
                 {
                     ele: 'button', text: 'run', styles: { 'display': 'inline-block', 'vertical-align': 'super', 'margin-left': '10px' }, evnts: {
                         click: () => {
-                            inodes.triggerSearch(`%applets #wfmanager !${doc.id}`)
+                            app.search(`%applets #wfmanager !${doc.id}`)
                         }
                     }
                 },
@@ -520,9 +515,6 @@ class workflows {
             }
         }
 
-        if (obj) {
-            obj = JSON.parse(obj.content);
-        }
         let ele = render('automation-ed', { ele: 'div' }, (id, obj) => this[id] = obj);
         this.storyBoard = new StoryTeller(ele);
         this.storyBoard.openStory(NameAndDescriptionStory, obj);

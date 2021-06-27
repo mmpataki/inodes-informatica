@@ -2,11 +2,10 @@ class edcresconfig {
     constructor() {
         this.elems = {}
     }
-    getCard(obj1) {
-        let obj = JSON.parse(obj1.content)
+    getCard(obj, obj1) {
         let ele = render('edcresconfig', { ele: 'div' })
         ele.appendChild(new SummaryStory(obj).tell())
-        ele.appendChild(render('', { ele: 'button', text: 'Deploy', evnts: { click: () => inodes.triggerSearch(`#edc #resourcedeployer !${obj1.id}`) } }))
+        ele.appendChild(render('', { ele: 'button', text: 'Deploy', evnts: { click: () => app.search(`#edc #resourcedeployer !${obj1.id}`) } }))
         return ele;
     }
 
@@ -14,7 +13,7 @@ class edcresconfig {
         let ele = render('edcresconfig', { ele: 'div' });
         this.storyTeller = new StoryTeller(ele);
         let storyClass = obj ? SummaryStory : EDCResTypeSelectionStory;
-        this.storyTeller.openStory(storyClass, obj ? JSON.parse(obj.content) : undefined)
+        this.storyTeller.openStory(storyClass, obj)
         return ele;
     }
 
@@ -290,7 +289,7 @@ class ResourceConfigStory {
                     if (scannerIds.length < 1) { resolve(); done(); return };
                     this.toggleBtn.style.display = "block"
                     updateText('Backing up the xdocs')
-                    inodes.runCommand(
+                    infaUtils.runCommand(
                         `bash $BIN_DIR/edc/resbackuprestore.sh backup "${c.url}" "${c.username}" "${c.password}" "${args.version}" "${args.resourceName}" "$ATTACH_DIR/${getCurrentUser()}/" ${scannerIds.map(sc => "\"" + sc + "\"").join(" ")}`,
                         this.runcmdout,
                         (s) => 0,  // data callback

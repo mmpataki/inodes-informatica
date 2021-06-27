@@ -4,7 +4,7 @@ class instances {
         this.currentUrls = {}
     }
 
-    getEditor(doc, obj) {
+    getEditor(obj) {
 
         let klass = this;
 
@@ -335,7 +335,7 @@ class instances {
                 this.tell = () => {
                     return render('instances', {
                         ele: 'div', styles: { display: 'flex', position: 'relative' }, children: [
-                            { ele: klass.getCard({ id: Math.random() }, arg), preBuilt: true}
+                            { ele: klass.getCard(arg, { id: Math.random() }), preBuilt: true}
                         ]
                     })
                 }
@@ -358,7 +358,7 @@ class instances {
         throw new Error('Please provide all inputs')
     }
 
-    getCard(doc, obj) {
+    getCard(obj, doc) {
         let objIden = doc.id
         let self = this;
         let CARD_META_URL = function (k, v, elem) {
@@ -623,7 +623,7 @@ class instances {
     postDisplay(items) {
         items.filter(item => item.readState == 'CAN_READ').forEach(item => {
             let postItems = [];
-            JSON.parse(item.content).urls.forEach(u => {
+            item.content.urls.forEach(u => {
                 postItems.push({
                     url: u.url,
                     extra: this.makeUrlId(item.id, u.tag)

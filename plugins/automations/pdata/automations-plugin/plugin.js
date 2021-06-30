@@ -112,7 +112,7 @@ class automations {
                 {
                     ele: 'button', text: 'run', styles: { 'display': 'inline-block', 'vertical-align': 'super', 'margin-left': '10px' }, evnts: {
                         click: () => {
-                            app.search(`%applets #wfmanager !${doc.id}`)
+                            app.search(`%applets #wfmanager !designer !${doc.id}`)
                         }
                     }
                 },
@@ -280,7 +280,7 @@ class workflows {
                 {
                     ele: 'button', text: 'run', styles: { 'display': 'inline-block', 'vertical-align': 'super', 'margin-left': '10px' }, evnts: {
                         click: () => {
-                            app.search(`%applets #wfmanager !${doc.id}`)
+                            app.search(`%applets #wfmanager !designer !${doc.id}`)
                         }
                     }
                 },
@@ -1135,7 +1135,19 @@ class JobViewer {
 
 class WfManager {
 
-    constructor(container, tasks) {
+    /**
+     * 
+     * @param {*} container : where to render this UI
+     * @param {*} action : what to open can be one of {designer, jobs}
+     * @param {*} input : if action = designer => list of task object else a jobid
+     */
+    constructor(container, action, input) {
+
+        let tasks, jobid
+        if(action === 'designer')
+            tasks = input
+        else if(action === 'viewjob')
+            jobid = input
 
         this.WF_BUILDER = 'Workflow Builder'
         this.JOBS_UI = 'Jobs'
@@ -1174,7 +1186,11 @@ class WfManager {
         this.objs[this.WF_BUILDER] = this.wfBuilder = new WorkflowBuilder(this[this.WF_BUILDER], this, tasks, ['automation', 'workflow'])
         this.objs[this.JOBS_UI] = this.jobsUI = new JobsUI(this[this.JOBS_UI], this)
         this.objs[this.JOB_VIEWER] = this.jobViewer = new JobViewer(this[this.JOB_VIEWER], this)
-        this.switchPanel(this.WF_BUILDER)
+        
+        if(action == 'viewjob')
+            this.openJob(jobid)
+        else
+            this.switchPanel(this.WF_BUILDER)
     }
 
     runWf() {

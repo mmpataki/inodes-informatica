@@ -25,6 +25,7 @@ execute create_backup_dir from $rootdir with command makedir backup 600 $uinodes
 echo > "$rootdir/conf/installconfig.sh"
 echo "export INODES_USER=$uinodes" >> "$rootdir/conf/installconfig.sh"
 echo "export INODESC_USER=$uinodesc" >> "$rootdir/conf/installconfig.sh"
+echo "export INODESC_PASS=create a user with name $uinodesc and paste the password here" >> "$rootdir/conf/installconfig.sh"
 
 execute create_inodesc_exec_dir from $rootdir/companion with command makedir exec 777 $uinodesc
 execute create_inodesc_attach_dir from $rootdir/companion with command makedir attach 600 $uinodesc

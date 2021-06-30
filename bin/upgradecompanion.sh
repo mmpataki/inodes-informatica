@@ -9,7 +9,7 @@ cd $ROOT_DIR/..
 
 echo "upgrading companion server"
 rm -f main.zip
-wget https://github.com/mmpataki/inodes-informatica/archive/refs/heads/main.zip
+wget --quiet https://github.com/mmpataki/inodes-informatica/archive/refs/heads/main.zip
 unzip -o -q main.zip
 
 chmod +x $bindir/*

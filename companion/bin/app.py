@@ -1,4 +1,4 @@
-import json, socket, os, sys, time, random, subprocess, flask, copy, re, requests
+import json, socket, os, sys, time, random, subprocess, flask, copy, re, requests, threading, urllib
 from requests import auth
 from urlparse import urlparse
 from flask import Flask, request, redirect, jsonify, send_from_directory, abort
@@ -7,12 +7,13 @@ from flask_cors import CORS
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
 from threading import Thread, RLock
-import threading
 
 app = flask.Flask(__name__)
 CORS(app)
 
 inodesurl = os.environ['INODES_URL']
+inodescuser = os.environ['INODESC_USER']
+inodescpass = os.environ['INODESC_PASS']
 
 def authenticate(req):
 	usr, tok = req.headers['Authtok'].split(':')
@@ -163,6 +164,23 @@ def updateWfStatus(lmbda, wf, status):
 	except: print('exception while updating wf status')
 	finally: lock.release()
 
+def notifyUser(user, job):
+	print('{}/notifications?txt={}&ugids=u-{}'.format(inodesurl, urllib.parse('Job completed'), user))
+	requests.post(
+		'{}/notifications?txt={}&ugids=u-{}'.format(
+			inodesurl, 
+			urllib.quote(
+				'Job <a href="{}/?q={}">{}</a> completed'.format(
+					inodesurl,
+					urllib.quote('%%applets #wfm !viewjob !{}'.format(job)),
+					job, 
+				)
+			),
+			user
+		),
+		auth=(inodescuser, inodescpass)
+	)
+
 def runWf(user, job_id):
 
 	#make a dir for job
@@ -222,6 +240,7 @@ def runWf(user, job_id):
 		updateWfStatus(lambda x: True, wf, 'stopped')
 	else:
 		updateWfStatus(lambda x: True, wf, 'failed' if failed else 'completed')
+	notifyUser()
 
 @app.route('/wf', methods = ['POST'])
 def submitwf():

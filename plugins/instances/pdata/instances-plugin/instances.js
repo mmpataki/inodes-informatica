@@ -335,7 +335,7 @@ class instances {
                 this.tell = () => {
                     return render('instances', {
                         ele: 'div', styles: { display: 'flex', position: 'relative' }, children: [
-                            { ele: klass.getCard(arg, { id: Math.random() }), preBuilt: true}
+                            { ele: klass.getCard(arg, { id: Math.random() }), preBuilt: true }
                         ]
                     })
                 }
@@ -584,6 +584,28 @@ class instances {
                 this.currentUrls[id] = ele
             }
         });
+    }
+
+    getSmallCard(obj, doc) {
+        return render('instances', {
+            ele: 'div', classList: 'smallcard', styles: { fontSize: '0.9em' },
+            children: [
+                {
+                    ele: 'div', classList: 'fside',
+                    children: [
+                        { ele: 'span', title: 'ip address / hostname', html: `&#x1F4BB; ${obj.ipaddr}` },
+                        { ele: 'span', title: 'install directory', html: `&#x1F4C1; ${obj.installloc}` },
+                    ]
+                },
+                {
+                    ele: 'div', classList: 'fside',
+                    children: obj.urls.map(u => ({
+                        ele: 'a', classList: 'smallurl',
+                        attribs: { href: u.url }, text: u.tag
+                    }))
+                }
+            ]
+        })
     }
 
     getPuttyUrl(obj) {

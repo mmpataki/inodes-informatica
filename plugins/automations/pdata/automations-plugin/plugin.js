@@ -1,41 +1,9 @@
-function _______inst_template(item) {
-    let inst = JSON.parse(item.content)
-    return render('a-i-s-r', {
-        ele: 'div',
-        classList: 'container',
-        children: [
-            { ele: 'span', text: 'Owner', classList: 'key' },
-            { ele: 'span', text: item.owner, classList: 'value' },
-            { ele: 'br' },
-
-            { ele: 'span', text: 'IP address', classList: 'key' },
-            { ele: 'span', text: inst.ipaddr, classList: 'value' },
-            { ele: 'br' },
-
-            { ele: 'span', text: 'Installation location', classList: 'key' },
-            { ele: 'span', text: inst.installloc, classList: 'value' },
-            { ele: 'br' },
-
-            {
-                ele: 'div',
-                classList: 'tags',
-                style: {
-                    padding: '10px'
-                },
-                attribs: {
-                    innerHTML: item.tags.map(t => `<span class="a-i-s-r-tag">${t}</span>`).join(' ')
-                }
-            }
-        ]
-    })
-}
-
 let ______inputTypes = {
     instances: {
         valuepicker: (iSpec, currentValue, inputChanged) => {
             let key = iSpec.name
             return {
-                ele: makeSearchAndSelectButton('instance', 'instance', _______inst_template, v => inputChanged(key, v), currentValue),
+                ele: makeSearchAndSelectButton('instance', 'instance', v => inputChanged(key, v), currentValue),
                 classList: 'props-ed-input',
                 preBuilt: true
             }
@@ -72,10 +40,7 @@ let ______inputTypes = {
                 ele: 'select',
                 classList: `ed-input`,
                 styles: { width: 'calc(100% - 12px)' },
-                evnts: {
-                    change: function () { inputChanged(key, this.value) },
-                    rendered: (e) => { inputChanged(key, e.value) }
-                }
+                evnts: { change: function () { inputChanged(key, this.value) } }
             })
 
             Promise.resolve(val).then(vals => {
@@ -88,6 +53,7 @@ let ______inputTypes = {
                     render('', { ele: 'option', text: x, attribs: { value: x } }, () => 0, ele)
                 })
                 ele.value = currentValue || vals[0]
+                inputChanged(key, ele.value)
             })
 
             return { ele, preBuilt: true }
@@ -96,10 +62,10 @@ let ______inputTypes = {
             ele.innerHTML = ''
             render('automation-i-and-s', {
                 ele: 'textarea',
-                label: 'function: ',
+                label: '&#402;: ',
                 attribs: { value: currentValue || "() => {\n\treturn [1,2,3]\n}", rows: 4 },
                 styles: { display: 'inline-block', 'vertical-align': 'middle', 'margin': '2px 10px 2px 0px', width: '200px' }
-            }, () => 1, ele)
+            }, 0, ele)
         },
         getExtraInputSpec: (ele) => {
             return { value: ele.querySelector('textarea').value };
@@ -155,6 +121,18 @@ class automations {
         })
     }
 
+    getSmallCard(obj, doc) {
+        return render('automation', {
+            ele: 'div',
+            classList: 'container', styles: { fontSize: '0.8em', maxWidth: '300px' },
+            children: [
+                { ele: 'img', attribs: { src: '/automations-plugin/automations.png', style: "height: 20px" } },
+                { ele: 'b', text: obj.name || "<no name, bug?>", styles: { 'vertical-align': 'super', 'margin-left': '6px' } },
+                { ele: 'span', html: obj.description || "<no description, bug?>", styles: { display: 'block' } }
+            ]
+        })
+    }
+
     getEditor(obj) {
 
         class ISummaryStory {
@@ -178,6 +156,7 @@ class automations {
                     let select = spec.querySelector('.automation-i-and-s-input-type')
                     ret.push({
                         name: spec.querySelector('.automation-i-and-s-name').value,
+                        dependson: spec.querySelector('.automation-i-and-s-dependson').value,
                         type: { name: select.value, ...(cutil.getExtraInputSpec(select.value, select.nextSibling)) },
                         label: spec.querySelector('.automation-i-and-s-label').value
                     })
@@ -186,14 +165,14 @@ class automations {
             }
             tell() {
                 let cutil = ____configutil;
-                let getInputBuilder = (inp) => {
+                let getInputBuilder = inp => {
                     let bldr = (x) => ({ ele: 'option', text: x, attribs: { value: x } })
                     let types = cutil.getInputTypes()
                     return {
                         ele: 'div', classList: 'input-spec', children: [
-                            { ele: 'button', classList: 'input-spec-remover', text: '-', attribs: { title: 'remove' }, evnts: { click: function () { this.parentNode.remove() } } },
-                            { ele: 'input', classList: 'name', label: 'input name: ', attribs: { value: inp ? inp.name : "" } },
+                            { ele: 'input', classList: 'name', label: 'name: ', attribs: { value: inp ? inp.name : "" } },
                             { ele: 'input', classList: 'label', label: 'label: ', attribs: { value: inp ? inp.label : "" } },
+                            { ele: 'input', classList: 'dependson', label: 'depends on: ', attribs: { value: inp ? inp.dependson : "" } },
                             {
                                 ele: 'select', label: 'type: ', classList: 'input-type',
                                 children: types.map(bldr),
@@ -209,7 +188,8 @@ class automations {
                                     }
                                 }
                             },
-                            { ele: 'div', styles: { display: 'inline-block' } }
+                            { ele: 'div', styles: { display: 'inline-block' } },
+                            { ele: 'i', attribs: { title: 'remove', classList: 'fa fa-minus-circle automation-i-and-s-input-spec-remover' }, evnts: { click: function () { this.parentNode.remove() } } }
                         ]
                     }
                 }
@@ -305,6 +285,18 @@ class workflows {
                     }
                 },
                 { ele: 'span', html: obj.description || "<no description, bug?>", styles: { display: 'block', 'margin-bottom': '10px' } }
+            ]
+        })
+    }
+
+    getSmallCard(obj, doc) {
+        return render('automation', {
+            ele: 'div',
+            classList: 'container', styles: { fontSize: '0.8em', maxWidth: '300px' },
+            children: [
+                { ele: 'img', attribs: { src: '/automations-plugin/workflow.png', style: 'height: 20px; width: 20px' } },
+                { ele: 'b', text: obj.name || "<no name, bug?>", styles: { display: 'inline', 'vertical-align': 'super', 'margin-left': '6px' } },
+                { ele: 'span', html: obj.description || "<no description, bug?>", styles: { display: 'block' } }
             ]
         })
     }
@@ -563,25 +555,6 @@ class WorkflowBuilder {
 
     getTaskItem(task) {
         let self = this;
-        let autoTemplate = (item) => {
-            if (item.content)
-                item = JSON.parse(item.content)
-            let typ = item.type == 'workflow' ? 'workflow' : 'automations'
-            return render('automation-sr', {
-                ele: 'div',
-                classList: 'container',
-                children: [
-                    { ele: 'img', classList: 'ico', attribs: { src: `automations-plugin/${typ}.png`, title: typ } },
-                    {
-                        ele: 'div', children: [
-                            { ele: 'b', text: `${item.name}: ` },
-                            { ele: 'i', html: item.description }
-                        ]
-                    }
-                ],
-                attribs: { data: item }
-            })
-        }
         return render('wfbldr', {
             ele: 'div',
             classList: 'task-container',
@@ -604,9 +577,9 @@ class WorkflowBuilder {
                             ele: makeSearchAndSelectButton(
                                 'workflow or an automation task',
                                 this.allowedObjectTypes.join('/'),
-                                autoTemplate,
                                 (v) => {
-                                    task.spec = v ? JSON.parse(v.content) : v;
+                                    task.spec = v ? v.content : v;
+                                    task.doc = v
                                     if (v == undefined) {
                                         if (task.propsManager)
                                             task.propsManager.destroy();
@@ -615,17 +588,17 @@ class WorkflowBuilder {
                                         this.showProps(task)
                                     }
                                 },
-                                task.spec
+                                task.doc
                             ),
                             children: [
-                                { ele: 'input', attribs: { type: 'radio', name: `automation-selected-inst-${this.inst}` }, styles: { display: 'none' } }
+                                { ele: 'input', classList: 'task-picker', attribs: { type: 'radio', name: `automation-selected-inst-${this.inst}` }, styles: { display: 'none' } }
                             ],
                             evnts: {
                                 click: function () {
-                                    if (!task.spec) return
-                                    let last = document.querySelector('.s-and-s-btn-container > input[type=radio]:checked');
+                                    let last = document.querySelector("div.s-and-s-btn-container.automation-sr-container-selected > input[type=radio]:checked");
                                     if (last) last.parentNode.classList.remove('automation-sr-container-selected');
-                                    let cb = this.querySelector('input[type=radio]')
+                                    if (!task.spec) return
+                                    let cb = this.querySelector('input.wfbldr-task-picker[type=radio]')
                                     cb.checked = true;
                                     this.classList.add('automation-sr-container-selected')
                                     self.showProps(task);
@@ -665,7 +638,7 @@ class WorkflowBuilder {
 
     updateTitle(task) {
         let elem;
-        if (!task || !task.uiElem || !(elem = task.uiElem.querySelector('.s-and-s-btn-picked-item > .automation-sr-container > div'))) return;
+        if (!task || !task.uiElem || !(elem = task.uiElem.querySelector('div.s-and-s-btn-picked-item > div > span'))) return;
         let d = this.getTaskTitle(task);
         if (d) elem.innerHTML = d;
     }
@@ -772,7 +745,7 @@ class WorkflowBuilder {
         let inps = {}
         Object.keys(inputs).forEach(key => {
             let x = inputs[key]
-            inps[key] = (typeof x === 'object' && x !== null) ? JSON.parse(inputs[key].content) : inputs[key]
+            inps[key] = (typeof x === 'object' && x !== null) ? inputs[key].content : inputs[key]
         })
         return inps;
     }
@@ -823,9 +796,11 @@ class WorkflowBuilder {
             this.tasks.push(this.newTask())
         this.graph.innerHTML = ''
         this.tasks.forEach(task => {
-            let taskUIElement = this.getTaskItem(task);
-            task.uiElem = taskUIElement;
-            render('wfbldr', { ele: taskUIElement, preBuilt: true }, null, this.graph)
+            if (!task.uiElem) {
+                let taskUIElement = this.getTaskItem(task);
+                task.uiElem = taskUIElement;
+            }
+            render('wfbldr', { ele: task.uiElem, preBuilt: true }, null, this.graph)
             this.updateTitle(task)
         })
     }
@@ -834,13 +809,37 @@ class WorkflowBuilder {
     destroy() { }
 }
 
+class PropEditor {
+    constructor(spec, value, ele, otherInputs, inputChanged) {
+
+        this.draw = function () {
+            ele.innerHTML = ''
+            render('wfbldr-props', [
+                { ele: 'td', styles: { minWidth: '50%' }, children: [{ ele: 'span', text: spec.label || spec.name }] },
+                { ele: 'td', styles: { minWidth: '50%' }, children: [____configutil.getValuePicker(spec, value, inputChanged, otherInputs)] }
+            ], 0, ele)
+        }
+
+        /* notifications for sibling value changes */
+        this.notify = function (key, value) {
+            if (spec.dependson && spec.dependson.split(',').includes(key)) {
+                this.draw()
+            }
+        }
+
+        this.draw()
+
+    }
+
+}
+
 class PropsManager {
 
     constructor(ele, spec, inputs, inputChangedCb) {
-        this.ele = ele;
-        this.spec = spec;
-        this.inputs = inputs || {};
-        this.inputChangedCb = inputChangedCb;
+        this.ele = ele
+        this.spec = spec
+        this.inputs = inputs || {}
+        this.inputChangedCb = inputChangedCb
     }
 
     destroy() {
@@ -850,9 +849,9 @@ class PropsManager {
     initialized() {
         let spec = this.spec
         for (let i = 0; i < spec.inputs.length; i++) {
-            const inputName = spec.inputs[i].name;
+            const inputName = spec.inputs[i].name
             if (!(inputName in this.inputs))
-                return false;
+                return false
         }
         return true;
     }
@@ -863,7 +862,7 @@ class PropsManager {
 
     showProps() {
 
-        let obj = this.spec, cutil = ____configutil;
+        let obj = this.spec;
 
         let extraInputs = [
             { name: 'failWfOnTaskFailure', label: 'Fail workflow on this taks failure', type: { name: 'boolean' }, default: false }
@@ -888,26 +887,28 @@ class PropsManager {
             ]
         }, (id, ele) => this[id] = ele, this.ele)
 
+        this.propsEditors = []
+
         let inputChanged = (key, value) => {
             this.inputs[key] = value
             if (this.inputChangedCb) {
                 try {
                     this.inputChangedCb(key, value)
+                    this.propsEditors.forEach(pe => pe.notify(key, value))
                 } catch (e) { /* don't give a damn */ }
             }
         }
 
-        tabulate(obj.inputs, this.tab, {
-            classPrefix: 'wfbldr-props',
-            keys: {
-                'Input property': { vFunc: (iSpec) => iSpec.label || iSpec.name },
-                'Value': {
-                    vFunc: (iSpec) => {
-                        return cutil.getValuePicker(iSpec, this.inputs[iSpec.name], inputChanged, obj.inputs)
+        render('prop-mgr', {
+            ele: 'table', styles: { width: '100%', 'table-layout': 'fixed' },
+            children: obj.inputs.map(input => ({
+                ele: 'tr', evnts: {
+                    rendered: ele => {
+                        this.propsEditors.push(new PropEditor(input, this.inputs[input.name], ele, this.inputs, inputChanged))
                     }
                 }
-            }
-        })
+            }))
+        }, 0, this.tab)
     }
 }
 

@@ -13,13 +13,14 @@
 }
 
 .automation-i-and-s-input-spec > input {
-    min-width: 100px;
+    width: 100px;
 }
 
 .automation-i-and-s-inputs {
     display: block;
     width: 100%;
-    margin: 10px 0px 20px 20px;
+    margin: 10px 0px 20px 0px;
+    padding-top: 10px;
 }
 
 .automation-i-and-s-inputs > textarea, .automation-i-and-s-inputs > input {
@@ -29,17 +30,12 @@
 }
 
 .automation-i-and-s-input-spec-remover {
-    border-radius: 50%;
-    padding: 0px 6px;
-    border: none;
-    background-color: black;
-    color: white;
     margin-right: 10px;
+    cursor:  pointer;
 }
 
 .automation-i-and-s-input-spec-remover:hover {
-    background-color: red;
-    color: white;
+    color: red;
 }
 
 .wfbldr-graph {
@@ -388,4 +384,14 @@
 .automation-sr-ico {
     margin: 5px;
     margin-right: 10px;
+}
+
+.automation-i-and-s-input-spec {
+    display: flex;
+    align-items: center;
+    padding: 5px 20px;
+}
+
+.automation-i-and-s-input-spec > input, .automation-i-and-s-input-spec > select, .automation-i-and-s-input-spec > textarea {
+    flex-grow: 1;
 }

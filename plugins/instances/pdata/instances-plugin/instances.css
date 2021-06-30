@@ -186,3 +186,33 @@
 .instances-card {
     flex-grow: 1;
 }
+
+/* small card */
+.instances-smallurl {
+    padding: 1px 5px;
+    background: #E4ECFF;
+    margin: 2px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.instances-fside {
+    display: flex;
+    flex-direction: column;
+}
+
+.instances-smallcard {
+    display: flex;
+    padding: 5px;
+    border-bottom: solid 1px lightgray;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.instances-skey {
+    display: inline;
+}
+
+.instances-sval {
+    display: inline;
+}

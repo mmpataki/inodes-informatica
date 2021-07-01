@@ -164,16 +164,16 @@ def updateWfStatus(lmbda, wf, status):
 	except: print('exception while updating wf status')
 	finally: lock.release()
 
-def notifyUser(user, job):
-	print('{}/notifications?txt={}&ugids=u-{}'.format(inodesurl, urllib.parse('Job completed'), user))
+def notifyUser(user, job, status):
 	requests.post(
 		'{}/notifications?txt={}&ugids=u-{}'.format(
 			inodesurl, 
 			urllib.quote(
-				'Job <a href="{}/?q={}">{}</a> completed'.format(
+				'Job <a href="{}/?q={}">{}</a> {}, click the link to see more details'.format(
 					inodesurl,
-					urllib.quote('%%applets #wfm !viewjob !{}'.format(job)),
-					job, 
+					urllib.quote('%applets #wfm !viewjob !{}'.format(job)),
+					job,
+					status
 				)
 			),
 			user
@@ -240,7 +240,7 @@ def runWf(user, job_id):
 		updateWfStatus(lambda x: True, wf, 'stopped')
 	else:
 		updateWfStatus(lambda x: True, wf, 'failed' if failed else 'completed')
-	notifyUser()
+	notifyUser(user, job_id, wf['state']['str'])
 
 @app.route('/wf', methods = ['POST'])
 def submitwf():

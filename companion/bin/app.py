@@ -166,8 +166,9 @@ def updateWfStatus(lmbda, wf, status):
 
 def notifyUser(user, job, status):
 	requests.post(
-		'{}/notifications?txt={}&ugids=u-{}'.format(
-			inodesurl, 
+		'{}/notifications?subject={}&txt={}&ugids=u-{}'.format(
+			inodesurl,
+			urllib.quote('inodes | Job {} completed'.format(job)),
 			urllib.quote(
 				'Job <a href="{}/?q={}">{}</a> {}, click the link to see more details'.format(
 					inodesurl,

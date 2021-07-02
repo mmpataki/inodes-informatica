@@ -1,0 +1,17 @@
+{
+    "name": "ia4jsnips",
+    "jsPaths": [
+        "/config.js",
+        "/infautils.js",
+        "ia4jsnips/plugin.js",
+        "/toastui-editor-all.min.js",
+        "/highlight.min.js"
+    ],
+    "cssPaths": [
+        "ia4jsnips/plugin.css",
+        "/toastui-editor.min.css",
+        "/idea.min.css"
+    ],
+    "version": 0,
+    "editApprovalNeeded": false
+}

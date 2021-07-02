@@ -92,6 +92,43 @@ class infautils {
         });
     }
 
+    makeProductComponentSelector(productSelectorId, componentSelectorId, values, classList) {
+
+        return {
+            ele: 'div', styles: { display: 'flex', alignItems: 'center' }, classList,
+            children: [
+                {
+                    ele: 'select', iden: productSelectorId, label: 'Product', styles: { margin: '0px 20px 0px 5px', flexGrow: '1', padding: '8px' }, attribs: { placeholder: 'loading...' }, evnts: {
+                        rendered: sel => {
+                            ncors_get(this.getConfig().infacode.url).then(x => {
+                                var doc = (new DOMParser()).parseFromString(x.response, "text/html");
+                                let __projs = doc.querySelector('#myTable').querySelectorAll('a')
+                                let projs = [];
+                                for (let i = 0; i < __projs.length; i++)
+                                    projs.push({ link: __projs[i].getAttribute('href'), text: __projs[i].innerText })
+                                projs.sort((a, b) => a.text < b.text);
+                                projs.forEach(p => {
+                                    sel.innerHTML += `<option value='${p.link}'>${p.text}</options>`
+                                })
+                                sel.value = values[0] || "All"
+                                sel.dispatchEvent(new Event('change'));
+                            })
+                        },
+                        change: function () {
+                            ncors_get(`http://psvglapp01:8080/${this.value}`).then(x => {
+                                var doc = (new DOMParser()).parseFromString(x.response, "text/html");
+                                this.nextSibling.nextSibling.innerHTML = "<option value='All'>All</option>" + doc.querySelector('#project').innerHTML
+                                this.nextSibling.nextSibling.value = values[1] || "All"
+                            })
+                        }
+                    }
+                },
+                { ele: 'select', iden: componentSelectorId, label: 'Component', styles: { marginLeft: '5px', flexGrow: '1', padding: '8px' }, attribs: { placeholder: 'loading...' }, evnts: {} }
+            ]
+        }
+
+    }
 }
 
-let infaUtils = new infautils();
+if (!window.infaUtils)
+    window.infaUtils = new infautils();

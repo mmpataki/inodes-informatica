@@ -1,9 +1,5 @@
 class instances {
 
-    constructor() {
-        this.currentUrls = {}
-    }
-
     getEditor(obj) {
 
         let klass = this;
@@ -160,7 +156,7 @@ class instances {
                         }
                     }
 
-                    let ret = this.suggestions = render('instances', { ele: 'div', classList: 'suggestions' }, (id, ele) => this[id] = ele)
+                    let ret = this.suggestions = render('instances', { ele: 'div', classList: 'dockers' }, (id, ele) => this[id] = ele)
 
                     callWithWaitUI(ret, (done, setText) => {
                         setText('Fetching your dockers list')
@@ -219,67 +215,46 @@ class instances {
         class ManualConfigStory {
             title() { return 'Fill in all the details of the instance' }
             tell() {
-                let kvpairtemplate = function (keyname, valuename, key, value, jsonKeyName, jsonValueName) {
+                let kvpairtemplate = function (keyname, valuename, key, value, jsonKeyName, jsonValueName, nfunc) {
                     return {
                         ele: "div", classList: "kvp", children: [
                             { ele: "input", classList: "kvp-k", attribs: { placeholder: keyname, width: "100px", value: key, keyName: jsonKeyName } },
                             { ele: "input", classList: "kvp-v", attribs: { placeholder: valuename, value, keyName: jsonValueName } },
-                            { ele: "button", text: "-", evnts: { click: function (e) { e.target.parentNode.remove() } } }
+                            { ele: "i", title: "add", classList: "$fa $fa-plus-circle", styles: {margin: '0px 2px'}, evnts: { click: function () { this.parentNode.parentNode.insertBefore(render('instances', nfunc({})), this.parentNode) } } },
+                            { ele: "i", title: 'remove', classList: "$fa $fa-minus-circle", styles: {margin: '0px 2px'}, evnts: { click: function (e) { e.target.parentNode.remove() } } }
                         ]
                     }
                 }
-                let urlpairtemplate = (u) => kvpairtemplate("tag / name", "url", u ? u.tag : "", u ? u.url : "", "tag", "url")
-                let metapairtemplate = (m) => kvpairtemplate("key", "value", m ? m.key : "", m ? m.value : "", "key", "value")
+                let urlpairtemplate = (u) => kvpairtemplate("tag / name", "url", u.tag || "", u.url || "", "tag", "url", urlpairtemplate)
+                let metapairtemplate = (m) => kvpairtemplate("key", "value", m.key || "", m.value || "", "key", "value", metapairtemplate)
                 let renderable = function (obj) {
+                    let makeKVInputs = (k1, v1, k2, v2) => ({
+                        ele: "div", classList: 'ad-inps', children: [
+                            { ele: "input", classList: "ad-inp", label: k1, value: v1 },
+                            { ele: "input", classList: "ad-inp", label: k2, value: v2 }
+                        ]
+                    })
                     return {
                         ele: "div",
                         attribs: { classList: "pane" },
                         children: [
                             {
                                 ele: "div", iden: 'manInput', classList: 'manual-instance-entry', children: [
-                                    {
-                                        ele: "div", classList: 'ad-inps', children: [
-                                            { ele: "input", classList: "ad-inp", label: "app username:", value: obj ? obj.appusername : "" },
-                                            { ele: "input", classList: "ad-inp", label: "app password:", value: obj ? obj.apppassword : "" }
-                                        ]
-                                    },
-                                    {
-                                        ele: "div", classList: 'ad-inps', children: [
-                                            { ele: "input", classList: "ad-inp", label: "box username:", value: obj ? obj.boxusername : "" },
-                                            { ele: "input", classList: "ad-inp", label: "box password:", value: obj ? obj.boxpassword : "" }
-                                        ]
-                                    },
-                                    {
-                                        ele: "div", classList: 'ad-inps', children: [
-                                            { ele: "input", classList: "ad-inp", label: "host / ip addr :", value: obj ? obj.ipaddr : "" },
-                                            { ele: "input", classList: "ad-inp", label: "install location:", value: obj ? obj.installloc : "" }
-                                        ]
-                                    },
+                                    makeKVInputs("app username:", obj ? obj.appusername : "", "app password:", obj ? obj.apppassword : ""),
+                                    makeKVInputs("box username:", obj ? obj.boxusername : "", "box password:", obj ? obj.boxpassword : ""),
+                                    makeKVInputs("host / ip addr :", obj ? obj.ipaddr : "", "install location:", obj ? obj.installloc : ""),
                                     {
                                         ele: 'div', classList: 'urlnmeta', children: [
                                             {
                                                 ele: 'div', iden: 'urlInput', children: [
-                                                    { ele: "b", classList: "urls-label", text: "URLs" },
-                                                    ...(obj ? obj.urls.map(u => urlpairtemplate(u)) : []),
-                                                    {
-                                                        ele: "button", text: "Add URL", classList: "add-url", evnts: {
-                                                            click: function () { this.parentNode.insertBefore(render('instances', urlpairtemplate()), this) }
-                                                        }
-                                                    }
+                                                    { ele: "label", styles: { display: 'block', marginTop: '5px' }, text: "URLs" },
+                                                    ...((obj && obj.urls && obj.urls.length > 0 ? obj.urls : [{}]).map(u => urlpairtemplate(u)))
                                                 ]
                                             },
                                             {
                                                 ele: 'div', iden: 'metaInput', children: [
-                                                    { ele: "b", classList: "urls-label", text: "Metadata" },
-                                                    ...((obj && obj.meta) ? obj.meta.map(m => metapairtemplate(m)) : []),
-                                                    {
-                                                        ele: "button",
-                                                        text: "Add key-value pair",
-                                                        classList: "add-url",
-                                                        evnts: {
-                                                            click: function () { this.parentNode.insertBefore(render('instances', metapairtemplate()), this) }
-                                                        }
-                                                    }
+                                                    { ele: "label", styles: { display: 'block', marginTop: '5px' }, text: "Metadata" },
+                                                    ...((obj && obj.meta && obj.meta.length > 0 ? obj.meta : [{}]).map(m => metapairtemplate(m)))
                                                 ]
                                             }
                                         ]
@@ -358,236 +333,88 @@ class instances {
         throw new Error('Please provide all inputs')
     }
 
-    getCard(obj, doc) {
-        let objIden = doc.id
-        let self = this;
-        let CARD_META_URL = function (k, v, elem) {
-            return {
-                ele: "tr",
-                classList: "card-metadata",
-                children: [
-                    {
-                        ele: "td",
-                        classList: "card-metatag",
-                        text: k
-                    },
-                    {
-                        ele: "td",
-                        classList: "card-meta",
-                        children: [
-                            {
-                                ele: elem,
-                                classList: "card-meta",
-                                attribs: {
-                                    href: v,
-                                    target: "_blank"
-                                },
-                                text: v
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-        let card_url_template = function (k, v, id) {
-            return {
-                ele: 'span',
-                classList: 'urltag',
-                iden: self.makeUrlId(id, k),
-                attribs: {
-                    title: 'fetching the status...'
-                },
-                evnts: {
-                    mouseover: function () {
-                        if (this.data) {
-                            let val = this.data;
-                            this.title = `${val.message} (refreshed ${Math.max(0, Math.round((Date.now() - val.lastChkTime * 1000) / 1000))}s ago)`
-                        }
-                    }
-                },
-                children: [
-                    {
-                        ele: 'a',
-                        text: k,
-                        attribs: { href: v, target: "_blank" }
-                    },
-                    {
-                        ele: 'span',
-                        classList: 'urlstatus-refresher',
-                        attribs: {
-                            title: 'force refresh status',
-                            innerHTML: '&#x21BB;',
-                            urlStatusReqData: {
-                                extra: self.makeUrlId(id, k),
-                                url: v,
-                                force: 'true'
-                            }
-                        },
-                        evnts: {
-                            click: function () {
-                                self.fetchStatus([this.urlStatusReqData])
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-        let card = {
-            ele: "div",
-            classList: "card",
-            children: [
-                {
-                    ele: "div",
-                    classList: 'details',
-                    children: [
-                        {
-                            ele: "div",
-                            classList: 'box-creds',
-                            children: [
-                                {
-                                    ele: "span",
-                                    classList: "card-boxcreds",
-                                    text: "Hostname / IP"
-                                },
-                                {
-                                    ele: "span",
-                                    classList: "card-boxusername",
-                                    text: `${obj.ipaddr}`
-                                }
-                            ]
-                        },
-                        {
-                            ele: "div",
-                            classList: "box-creds",
-                            children: [
-                                {
-                                    ele: "span",
-                                    classList: "card-boxcreds",
-                                    text: "Box credentials"
-                                },
-                                {
-                                    ele: "span",
-                                    classList: "card-boxusername",
-                                    text: `${obj.boxusername} / ${obj.boxpassword}`
-                                },
+    getCard(obj) {
 
-                            ]
-                        },
-                        {
-                            ele: "div",
-                            classList: 'box-creds',
-                            children: [
-                                {
-                                    ele: "span",
-                                    classList: "card-boxcreds",
-                                    text: "Installation location"
-                                },
-                                {
-                                    ele: "span",
-                                    classList: "card-boxusername",
-                                    text: `${obj.installloc}`
-                                }
-                            ]
-                        },
-                        {
-                            ele: "div",
-                            classList: "app-creds",
-                            children: [
-                                {
-                                    ele: "span",
-                                    classList: "card-appcreds",
-                                    text: "App credentials"
-                                },
-                                {
-                                    ele: "span",
-                                    classList: "card-appusername",
-                                    text: `${obj.appusername} / ${obj.apppassword}`
-                                }
-                            ]
-                        },
-                        {
-                            ele: 'a',
-                            text: '...',
-                            styles: {
-                                cursor: 'pointer',
-                                display: obj.meta ? 'block' : 'none',
-                                'margin-left': '5px'
-                            },
-                            attribs: {
-                                title: 'Other metadata'
-                            },
-                            evnts: {
-                                click: function () {
-                                    this.nextSibling.style.display = this.nextSibling.style.display == 'none' ? 'block' : 'none';
-                                }
-                            }
-                        },
-                        {
-                            ele: "table",
-                            classList: "card-metadata-container",
-                            styles: { display: 'none' },
-                            children: []
-                        },
-                        {
-                            ele: "div",
-                            classList: "card-url-container",
-                            children: []
-                        },
+        /* filler */
+        if (app.loggedIn())
+            obj.appusername = obj.appusername.replace('nt_user_id', app.currentUid())
+
+        let card_meta_kv = (k, v) => ({
+            ele: "tr", classList: "card-metadata", children: [
+                { ele: "td", classList: "kcolonv-key", text: k },
+                { ele: "td", classList: "card-meta", text: v }
+            ]
+        })
+
+        let card_url_template = (k, v, id) => ({
+            ele: 'span', classList: 'url $aexternal', iden: this.makeUrlId(id), title: 'fetching the status...',
+            evnts: {
+                mouseover: function () {
+                    if (this.data) {
+                        let val = this.data;
+                        this.title = `${val.message} (refreshed ${Math.max(0, Math.round((Date.now() - val.lastChkTime * 1000) / 1000))}s ago)`
+                    }
+                }
+            },
+            children: [
+                { ele: 'a', text: k, attribs: { href: v, target: "_blank" } },
+                {
+                    ele: 'span', classList: 'urlstatus-refresher', title: 'force refresh status', html: '&#x21BB;',
+                    attribs: { urlStatusReqData: { extra: this.makeUrlId(id), url: v, force: 'true' } },
+                    evnts: { click: function () { this.fetchStatus([this.urlStatusReqData]) } }
+                }
+            ]
+        })
+
+        let linkBtn = (ico, lnk, styles, title) => ({
+            ele: "a", classList: "connect-icon", styles,
+            attribs: { href: lnk, innerHTML: `<img alt='${title}' src="./instances-plugin/images/${ico}" style="width: 20px"/>`, title }
+        })
+
+        let kvp = (key, value) => ({
+            ele: "div", classList: 'kcolonv', children: [
+                { ele: "span", classList: "kcolonv-key", text: `${key} : ` },  // we need a space after key
+                { ele: "span", classList: "kcolonv-value", text: value }
+            ]
+        })
+
+        let card = {
+            ele: "div", classList: "card", children: [
+                {
+                    ele: "div", classList: 'details', children: [
+                        kvp("Hostname / IP", obj.ipaddr),
+                        kvp("Box credentials", `${obj.boxusername} / ${obj.boxpassword}`),
+                        kvp("Installation location", obj.installloc),
+                        kvp("App credentials", `${obj.appusername} / ${obj.apppassword}`),
+                        kvp("Hostname / IP", obj.ipaddr),
+                        ...(!obj.meta ? [] : makeExpandable(
+                            '<a style="cursor: pointer" title="Other metadata">...</a>',
+                            { ele: "table", classList: "card-metadata-container", children: obj.meta.map(u => card_meta_kv(u.key, u.value, 'span')) })
+                        ),
+                        { ele: "div", styles: { marginTop: '10px' }, children: obj.urls.map((u, idx) => card_url_template(u.tag, u.url, idx)) },
                     ]
                 },
                 {
-                    ele: 'div',
-                    classList: "icons",
-                    children: [
-                        {
-                            ele: "a",
-                            classList: "card-boxlogin",
-                            attribs: {
-                                href: self.getPuttyUrl(obj),
-                                innerHTML: `<img alt='SSH' src="./instances-plugin/images/putty.png" style="width: 20px"/>`,
-                                title: 'SSH'
-                            }
-                        },
-                        {
-                            ele: "a",
-                            classList: "card-boxlogin",
-                            attribs: {
-                                href: self.getScpUrl(obj),
-                                innerHTML: `<img alt='SCP' src="./instances-plugin/images/winscp.jpg" style="width: 20px"/>`,
-                                title: 'SCP'
-                            }
-                        },
-                        {
-                            ele: "a",
-                            classList: "card-boxlogin",
-                            attribs: {
-                                href: `ms-rd://full%20address:s:${obj.ipaddr}`,
-                                innerHTML: `<img alt='RDP' src="./instances-plugin/images/rdp.png" style="width: 20px"/>`,
-                                title: 'RDP'
-                            }
-                        }
+                    ele: 'div', classList: "icons", children: [
+                        linkBtn('putty.png', `ssh://${obj.boxusername}:${encodeURIComponent(obj.boxpassword)}@${obj.ipaddr}`, undefined, 'SSH'),
+                        linkBtn('winscp.jpg', `scp://${obj.boxusername}:${encodeURIComponent(obj.boxpassword)}@${obj.ipaddr}`, undefined, 'SCP'),
+                        linkBtn('rdp.png', `ms-rd://full%20address:s:${obj.ipaddr}`, { borderBottom: 'none' }, 'RDP')
                     ]
                 }
             ]
         }
-        let start = 6;
-        obj.urls.forEach(u => {
-            card.children[0].children[start].children.push(card_url_template(u.tag, u.url, objIden))
-        })
-        if (obj.meta) {
-            obj.meta.forEach(u => {
-                card.children[0].children[start - 1].children.push(CARD_META_URL(u.key, u.value, 'span'))
-            })
-        }
-        return render('instances', card, (id, ele) => {
-            if (id.startsWith('url:')) {
-                this.currentUrls[id] = ele
-            }
-        });
+        let urlSet = {}
+        let x = render('instances', card, (id, ele) => { if (id.startsWith('url:')) urlSet[id] = ele })
+        this.fetchStatus(obj.urls, urlSet)
+        return x
     }
 
-    getSmallCard(obj, doc) {
-        return render('instances', {
+    getSmallCard(obj) {
+        /* filler */
+        if (app.loggedIn())
+            obj.appusername = obj.appusername.replace('nt_user_id', app.currentUid())
+        let urlSet = {}
+        let x = render('instances', {
             ele: 'div', classList: 'smallcard', styles: { fontSize: '0.9em' },
             children: [
                 {
@@ -599,65 +426,35 @@ class instances {
                 },
                 {
                     ele: 'div', classList: 'fside',
-                    children: obj.urls.map(u => ({
-                        ele: 'a', classList: 'smallurl',
-                        attribs: { href: u.url }, text: u.tag
-                    }))
+                    children: obj.urls.map((u, idx) => ({ ele: 'a', iden: this.makeUrlId(idx), classList: 'smallurl $aexternal', attribs: { href: u.url, target: '_blank' }, text: u.tag }))
                 }
             ]
-        })
-    }
-
-    getPuttyUrl(obj) {
-        return `ssh://${obj.boxusername}:${encodeURIComponent(obj.boxpassword)}@${obj.ipaddr}`
-    }
-
-    getScpUrl(obj) {
-        return `scp://${obj.boxusername}:${encodeURIComponent(obj.boxpassword)}@${obj.ipaddr}`
+        }, (id, ele) => { if (id.startsWith('url:')) urlSet[id] = ele })
+        this.fetchStatus(obj.urls, urlSet)
+        return x
     }
 
     getTags() {
-        if (this.importedTags) {
-            let t = this.importedTags;
-            this.importedTags = undefined;
-            return t;
-        }
-        return [];
+        console.log(this.getContent())
+        return []
     }
 
-    makeUrlId(id, tag) {
-        return `url:${id}:${tag}`
-    }
+    makeUrlId(id) { return `url:${id}` }
 
-    fetchStatus(postItems) {
-        let self = this;
-        infaUtils.cpost('/testconn', { items: postItems }, { 'Content-Type': 'application/json' })
-            .then(x => {
-                let resp = JSON.parse(x.response)
-                resp.items.forEach(val => {
-                    self.currentUrls[val.extra].classList.remove('instance-up', 'instance-down')
-                    self.currentUrls[val.extra].classList.add(val.message == 'up' ? 'instance-up' : 'instance-down')
-                    self.currentUrls[val.extra].data = val
-                })
+    fetchStatus(urls, urlEles) {
+        infaUtils.cpost('/testconn', { items: urls.map((u, idx) => ({ url: u.url, extra: this.makeUrlId(idx) })) }).then(x => {
+            x.json.items.forEach(val => {
+                let uiEle = urlEles[val.extra]
+                uiEle.classList.remove('instance-up', 'instance-down')
+                uiEle.classList.add(val.message == 'up' ? 'instance-up' : 'instance-down')
+                uiEle.data = val
             })
-    }
-
-    postDisplay(items) {
-        items.filter(item => item.readState == 'CAN_READ').forEach(item => {
-            let postItems = [];
-            item.content.urls.forEach(u => {
-                postItems.push({
-                    url: u.url,
-                    extra: this.makeUrlId(item.id, u.tag)
-                })
-            })
-            this.fetchStatus(postItems)
         })
     }
 
     getCopyContent(doc) {
         let obj = JSON.parse(doc.content)
-        return `Hostname: <b>${obj.ipaddr}</b> &nbsp; <a href='${this.getPuttyUrl(obj)}'>putty</a> &nbsp; <a href='${this.getScpUrl(obj)}'>scp</a><br/>
+        return `Hostname: <b>${obj.ipaddr}</b> &nbsp;<br/>
 Box credentials : <b>${obj.boxusername} / ${obj.boxpassword}</b><br/>
 App credentials : <b>${obj.appusername} / ${obj.apppassword}</b><br/>
 Installation location : <b>${obj.installloc}</b><br/>

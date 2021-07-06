@@ -1,5 +1,6 @@
 {
     "name": "edcresconfig",
+    "desc": "edc resource configurations, which can be reused for repro deployments",
     "jsPaths": [
         "/config.js",
         "/infautils.js",

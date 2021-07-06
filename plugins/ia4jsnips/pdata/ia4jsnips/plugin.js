@@ -2,9 +2,7 @@ class ia4jsnips {
 
     getCard(obj) {
         return render('ia4jsnips', {
-            ele: 'div',
-            classList: 'container',
-            children: [
+            ele: 'div', children: [
                 { ele: 'h2', text: obj.title },
                 {
                     ele: 'div', styles: { marginBottom: '40px' }, children: [
@@ -16,7 +14,7 @@ class ia4jsnips {
                                 <a href='${infaUtils.getConfig().infacode.url}/${obj.product}/xref/${obj.component}'>${obj.component}</a>
                             `
                         },
-                        { ele: 'a', attribs: { classList: 'fa fa-download', href: `data:text/octet-stream;base64,${btoa(obj.instrumentation)}`, download: 'ia4j.props'}, text: ' Download', styles: { float: 'right', fontSize: '0.8em' } }
+                        { ele: 'a', attribs: { classList: 'fa fa-download', href: `data:text/octet-stream;base64,${btoa(obj.instrumentation)}`, download: 'ia4j.props' }, text: ' Download', styles: { float: 'right', fontSize: '0.8em' } }
                     ]
                 },
                 makeMarkdownViewer('viewer', obj.problem, ''),
@@ -34,20 +32,11 @@ class ia4jsnips {
     getEditor(obj) {
         let self = this;
         let ele = render('ia4jsnip', {
-            ele: "div", classList: 'container',
-            children: [
-                {
-                    ele: 'div', classList: 'title', children: [
-                        { ele: 'input', iden: 'title', label: 'Title: ', attribs: { value: obj ? obj.title : "" }, styles: { width: '100%', display: 'block', padding: '8px' } }
-                    ]
-                },
-                infaUtils.makeProductComponentSelector('product', 'component', [obj ? obj.product : "", obj ? obj.component : ""], "pcsel"),
+            ele: "div", styles: { flexGrow: 1 }, children: [
+                { ele: 'div', classList: '$form-row', children: [{ ele: 'input', iden: 'title', label: 'Title: ', attribs: { value: obj ? obj.title : "" } }] },
+                infaUtils.makeProductComponentSelector('product', 'component', [obj ? obj.product : "", obj ? obj.component : ""], "pcsel $form-row"),
                 { ele: 'div', styles: { height: '350px' }, label: 'Story / Problem:', children: [makeMarkDownEditor('problem', obj ? obj.problem : "", "ped")] },
-                {
-                    ele: 'div', styles: { margin: '20px 0px' }, children: [
-                        { ele: 'textarea', styles: { height: '100px', display: 'block', width: '100%' }, label: 'Instrumentation', iden: 'instrumentation', attribs: { value: obj ? obj.instrumentation : "" } }
-                    ]
-                }
+                { ele: 'div', classList: '$form-col', children: [makeCodeEditor('instrumentation', 'java', obj ? obj.instrumentation : "", 'props', 'Instrumentation')] }
             ]
         }, (id, obj) => self[id] = obj);
         return ele;
@@ -59,7 +48,7 @@ class ia4jsnips {
             product: this.product.value,
             component: this.component.value,
             problem: this.problem.mdeditor.getMarkdown(),
-            instrumentation: this.instrumentation.value
+            instrumentation: this.instrumentation.ceditor.toString()
         }
     }
 

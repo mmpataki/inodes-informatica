@@ -29,6 +29,9 @@ class infautils {
     }
 
     cpost(url, data, hdrs) {
+        if (typeof data !== 'string') {
+            hdrs = { "Content-Type": "application/json", ...hdrs }
+        }
         return this.do_ajax(false, _post, url, data, hdrs)
     }
 
@@ -95,35 +98,35 @@ class infautils {
     makeProductComponentSelector(productSelectorId, componentSelectorId, values, classList) {
 
         return {
-            ele: 'div', styles: { display: 'flex', alignItems: 'center' }, classList,
+            ele: 'div', classList: classList + " $form-row",
             children: [
                 {
-                    ele: 'select', iden: productSelectorId, label: 'Product', styles: { margin: '0px 20px 0px 5px', flexGrow: '1', padding: '8px' }, attribs: { placeholder: 'loading...' }, evnts: {
+                    ele: 'select', iden: productSelectorId, label: 'Product:', attribs: { placeholder: 'loading...' }, evnts: {
                         rendered: sel => {
+                            sel.disabled = true
                             ncors_get(this.getConfig().infacode.url).then(x => {
                                 var doc = (new DOMParser()).parseFromString(x.response, "text/html");
                                 let __projs = doc.querySelector('#myTable').querySelectorAll('a')
                                 let projs = [];
                                 for (let i = 0; i < __projs.length; i++)
                                     projs.push({ link: __projs[i].getAttribute('href'), text: __projs[i].innerText })
-                                projs.sort((a, b) => a.text < b.text);
-                                projs.forEach(p => {
-                                    sel.innerHTML += `<option value='${p.link}'>${p.text}</options>`
-                                })
-                                sel.value = values[0] || "All"
+                                projs.sort((a, b) => a.text < b.text).forEach(p => sel.innerHTML += `<option value='${p.link}'>${p.text}</options>`)
+                                if(values[0]) sel.value = values[0]
+                                sel.disabled = false
                                 sel.dispatchEvent(new Event('change'));
                             })
                         },
                         change: function () {
+                            let comp = this.nextSibling.nextSibling; comp.disabled = true
                             ncors_get(`http://psvglapp01:8080/${this.value}`).then(x => {
                                 var doc = (new DOMParser()).parseFromString(x.response, "text/html");
-                                this.nextSibling.nextSibling.innerHTML = "<option value='All'>All</option>" + doc.querySelector('#project').innerHTML
-                                this.nextSibling.nextSibling.value = values[1] || "All"
+                                comp.innerHTML = "<option value='All'>All</option>" + doc.querySelector('#project').innerHTML
+                                comp.value = values[1] || "All", comp.disabled = false
                             })
                         }
                     }
                 },
-                { ele: 'select', iden: componentSelectorId, label: 'Component', styles: { marginLeft: '5px', flexGrow: '1', padding: '8px' }, attribs: { placeholder: 'loading...' }, evnts: {} }
+                { ele: 'select', iden: componentSelectorId, label: 'Component:', attribs: { placeholder: 'loading...' }, evnts: {} }
             ]
         }
 

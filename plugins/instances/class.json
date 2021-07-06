@@ -1,5 +1,6 @@
 {
   "name": "instances",
+  "desc": "application instances like EDC, dockers, Hadoop clusters",
   "jsPaths": [
     "/config.js",
     "/infautils.js",

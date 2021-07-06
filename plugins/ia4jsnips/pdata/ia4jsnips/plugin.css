@@ -1,27 +1,10 @@
-.ia4jsnip-ped, .ia4jsnip-ied {
-    display: block;
-    height: 150px;
-    margin: 5px 0px;
-}
+.ia4jsnip-ped { width: 100%; flex-grow: 0; }
 
-.ia4jsnip-pcsel, .ia4jsnip-title {
-    padding: 10px 0px;
-}
+.ia4jsnip-pcsel { margin-bottom: 15px; }
 
-.ia4jsnip-pcsel {
-    margin-bottom: 15px;
-}
+.ia4jsnip-title { display: flex; align-items: center; }
 
-.ia4jsnip-title {
-    display: flex;
-    align-items: center;
-}
-
-.ia4jsnip-container > input, .ia4jsnip-container > select{
-    padding: 8px;
-    border: solid 1px lightgray;
-    outline: none;
-}
+.ia4jsnip-container > input, .ia4jsnip-container > select{ border: solid 1px lightgray; outline: none; }
 
 .ia4jsnips-instr {
     padding: 15px;

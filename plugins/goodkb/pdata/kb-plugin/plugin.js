@@ -1,73 +1,28 @@
 class goodkb {
 
     getCard(obj) {
-        let template = function(obj) {
-            return {
-                ele: 'div',
-                classList: 'container',
-                children: [
-                    {
-                        ele: 'span',
-                        classList: 'title',
-                        text: obj.title || "<no title, bug?>"
-                    },
-                    {
-                        ele: 'a',
-                        classList: 'url',
-                        attribs : {
-                            href: obj.url || "<no link, bug?>",
-                            target: "_blank"
-                        },
-                        text: obj.url || "<no link, bug?>"
-                    }
-                ]
-            }
-        }
-        return render('goodkb', template(obj));
+        return render('goodkb', {
+            ele: 'div', classList: 'container', children: [
+                { ele: 'span', classList: 'title', text: obj.title || "<no title, bug?>" },
+                { ele: 'a', classList: 'url', attribs: { href: obj.url || "#", target: "_blank" }, text: obj.url || "<no link, bug?>" }
+            ]
+        });
     }
 
     getEditor(obj) {
-        let self = this;
-        let renderable = function (obj) {
-            return {
-                ele: "div",
-                children: [
-                    {
-                        ele: "input",
-                        classList: "input",
-                        label: "Title",
-                        iden: "title",
-                        attribs: {
-                            value: obj ? obj.title : ""
-                        }
-                    },
-                    {
-                        ele: "input",
-                        classList: "input",
-                        label: "URL",
-                        iden: "url",
-                        attribs: {
-                            value: obj ? obj.url : ""
-                        }
-                    }
-                ]
-            }
-        }
-        let ele = render('goodkb-ed', renderable(obj), (id, obj) => {
-            self[id] = obj
-        });
-        return ele;
+        return render('goodkb-ed', {
+            ele: "div", classList: '$form', children: [
+                { ele: 'div', classList: '$form-row', children: [{ ele: "input", label: "Title: ", iden: "title", value: obj ? obj.title : "" }] },
+                { ele: 'div', classList: '$form-row', children: [{ ele: "input", label: "URL: ", iden: "url", value: obj ? obj.url : "" }] }
+            ]
+        }, (id, obj) => this[id] = obj)
     }
 
     getContent() {
-        return {
-            url: this.url.value,
-            title: this.title.value
-        };
+        return { url: this.url.value, title: this.title.value }
     }
 
-    getCopyContent(doc) {
-        let obj = JSON.parse(doc.content)
+    getCopyContent(obj) {
         return `<b>${obj.title}</b><br/><a href="${obj.url}">${obj.url}</a><br/>`
     }
 

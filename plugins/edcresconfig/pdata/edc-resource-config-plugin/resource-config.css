@@ -150,3 +150,7 @@
     display: block;
     width: 60%;
 }
+
+.inp-type-select-radio {
+    margin-right: 10px
+}

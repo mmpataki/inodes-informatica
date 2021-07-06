@@ -1,5 +1,6 @@
 {
     "name": "goodkb",
+    "desc": "good kbs which should be findable easily and quickly",
     "jsPaths": [
         "/config.js",
         "/infautils.js",

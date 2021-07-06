@@ -1,5 +1,6 @@
 {
   "name": "workflows",
+  "desc": "group of tasks which share inputs",
   "jsPaths": [
     "/config.js",
     "/infautils.js",

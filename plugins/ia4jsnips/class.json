@@ -1,16 +1,13 @@
 {
     "name": "ia4jsnips",
+    "desc": "ia4j snippets which can be shared",
     "jsPaths": [
         "/config.js",
         "/infautils.js",
-        "ia4jsnips/plugin.js",
-        "/toastui-editor-all.min.js",
-        "/highlight.min.js"
+        "ia4jsnips/plugin.js"
     ],
     "cssPaths": [
-        "ia4jsnips/plugin.css",
-        "/toastui-editor.min.css",
-        "/idea.min.css"
+        "ia4jsnips/plugin.css"
     ],
     "version": 0,
     "editApprovalNeeded": false

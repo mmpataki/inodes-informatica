@@ -145,7 +145,7 @@ class automations {
         class ScriptIoEditor {
             constructor(obj) { this.obj = obj }
             title() { return "Provide inputs and script" }
-            moral() { return { ...(this.obj || {}), script: this.script.value, inputs: this.getInputSpecs(), postInputTitleTemplate: this.postInputTitleTemplate.value } }
+            moral() { return { ...(this.obj || {}), script: this.script.ceditor.toString(), inputs: this.getInputSpecs(), postInputTitleTemplate: this.postInputTitleTemplate.value } }
             isCompleted() { return true }
             nextStoryClass() { return ISummaryStory }
             getInputSpecs() {
@@ -172,7 +172,7 @@ class automations {
                         ele: 'div', classList: 'input-spec', children: [
                             { ele: 'input', classList: 'name', label: 'name: ', attribs: { value: inp ? inp.name : "" } },
                             { ele: 'input', classList: 'label', label: 'label: ', attribs: { value: inp ? inp.label : "" } },
-                            { ele: 'input', classList: 'dependson', label: 'depends on: ', attribs: { value: inp ? inp.dependson : "" } },
+                            { ele: 'input', classList: 'dependson', label: 'depends on: ', attribs: { value: inp ? inp.dependson || "" : "" } },
                             {
                                 ele: 'select', label: 'type: ', classList: 'input-type',
                                 children: types.map(bldr),
@@ -181,14 +181,11 @@ class automations {
                                     change: function () {
                                         cutil.renderInputSpecInputter(this.value, this.nextSibling)
                                     },
-                                    rendered: function (e) {
-                                        if (inp) {
-                                            cutil.renderInputSpecInputter(inp.type.name, e.nextSibling, inp.type.value)
-                                        }
-                                    }
+                                    rendered: e => inp && cutil.renderInputSpecInputter(inp.type.name, e.nextSibling, inp.type.value)
                                 }
                             },
                             { ele: 'div', styles: { display: 'inline-block' } },
+                            { ele: 'i', attribs: { title: 'add input', classList: 'fa fa-plus-circle automation-i-and-s-input-spec-remover' }, evnts: { click: function () { this.parentNode.parentNode.insertBefore(render('automation-i-and-s', getInputBuilder()), this.parentNode.nextSibling) } } },
                             { ele: 'i', attribs: { title: 'remove', classList: 'fa fa-minus-circle automation-i-and-s-input-spec-remover' }, evnts: { click: function () { this.parentNode.remove() } } }
                         ]
                     }
@@ -203,23 +200,13 @@ class automations {
                     ele: 'div',
                     classList: 'container',
                     children: [
+                        { ele: 'div', iden: 'inputs', classList: 'inputs', label: 'Inputs : (Specify the inputs this automation expects)', children: getInputs() },
                         {
-                            ele: 'div', iden: 'inputs', classList: 'inputs', label: 'Inputs', labelStyle: 'font-weight: bold', children: [
-                                { ele: 'span', text: 'Specify the inputs this automation expects' },
-                                ...getInputs(),
-                                { ele: 'button', text: 'add input', evnts: { click: function () { this.parentNode.insertBefore(render('automation-i-and-s', getInputBuilder()), this) } } }
+                            ele: 'div', classList: 'inputs $form-row', children: [
+                                { ele: 'input', iden: 'postInputTitleTemplate', label: 'Title template:', attribs: { value: this.obj ? this.obj.postInputTitleTemplate || '' : '' } }
                             ]
                         },
-                        {
-                            ele: 'div', classList: 'inputs', label: 'Title template', labelStyle: 'font-weight: bold', children: [
-                                { ele: 'input', iden: 'postInputTitleTemplate', attribs: { value: this.obj ? this.obj.postInputTitleTemplate || '' : '' } }
-                            ]
-                        },
-                        {
-                            ele: 'div', classList: 'inputs', label: 'Shell script', labelStyle: 'font-weight: bold', children: [
-                                { ele: 'textarea', iden: 'script', attribs: { rows: 10, value: this.obj ? this.obj.script || '' : '' } }
-                            ]
-                        }
+                        { ele: 'div', label: 'Shell script (use above inputs in script as ${input_name})', classList: 'inputs $form-col', children: [makeCodeEditor('script', 'bash', this.obj ? this.obj.script || '' : '', 'escript')] }
                     ]
                 }, (id, ele) => this[id] = ele)
             }
@@ -237,10 +224,18 @@ class automations {
                 let r = Math.random();
                 return render('automation-name-and-desc', {
                     ele: 'div',
-                    classList: 'container',
+                    classList: 'container $form',
                     children: [
-                        { ele: 'input', iden: 'name', label: 'Name', attribs: { value: this.obj ? this.obj.name : "" } },
-                        { ele: 'textarea', iden: 'description', label: 'Description', attribs: { value: this.obj ? this.obj.description : "" } },
+                        {
+                            ele: 'div', classList: '$form-row', children: [
+                                { ele: 'input', iden: 'name', label: 'Name: ', attribs: { value: this.obj ? this.obj.name : "" } }
+                            ]
+                        },
+                        {
+                            ele: 'div', classList: '$form-col', children: [
+                                { ele: 'textarea', iden: 'description', label: 'Description: ', attribs: { value: this.obj ? this.obj.description : "" } }
+                            ]
+                        },
                         {
                             ele: 'div', iden: 'autoType', classList: 'types', label: 'Type of automation', children: [
                                 { ele: 'input', attribs: { type: 'radio', name: `automation-type-${r}`, value: 'shellscript', checked: this.obj ? this.obj.type == 'shellscript' : false }, postlabel: 'shell script' }
@@ -431,25 +426,17 @@ class workflows {
                     let types = cutil.getInputTypes()
                     return {
                         ele: 'div', classList: 'input-spec', children: [
-                            { ele: 'button', classList: 'input-spec-remover', text: '-', attribs: { title: 'remove' }, evnts: { click: function () { this.parentNode.remove() } } },
-                            { ele: 'input', classList: 'name', label: 'input name: ', attribs: { value: inp ? inp.name : "" } },
+                            { ele: 'input', classList: 'name', label: 'name:', attribs: { value: inp ? inp.name : "" } },
                             { ele: 'input', classList: 'label', label: 'label: ', attribs: { value: inp ? inp.label : "" } },
                             {
-                                ele: 'select', label: 'type: ', classList: 'input-type',
-                                children: types.map(bldr),
-                                attribs: { value: inp ? inp.type.name : types[0] },
-                                evnts: {
-                                    change: function () {
-                                        cutil.renderInputSpecInputter(this.value, this.nextSibling)
-                                    },
-                                    rendered: function (e) {
-                                        if (inp) {
-                                            cutil.renderInputSpecInputter(inp.type.name, e.nextSibling, inp.type.value)
-                                        }
-                                    }
+                                ele: 'select', label: 'type:', classList: 'input-type', children: types.map(bldr), attribs: { value: inp ? inp.type.name : types[0] }, evnts: {
+                                    change: function () { cutil.renderInputSpecInputter(this.value, this.nextSibling) },
+                                    rendered: function (e) { if (inp) cutil.renderInputSpecInputter(inp.type.name, e.nextSibling, inp.type.value) }
                                 }
                             },
-                            { ele: 'div', styles: { display: 'inline-block' } }
+                            { ele: 'div', styles: { display: 'inline-block' } },
+                            { ele: 'i', classList: 'input-spec-remover $fa $fa-plus-circle', title: 'add input', evnts: { click: function () { this.parentNode.parentNode.insertBefore(render('automation-i-and-s', getInputBuilder()), this.parentNode.nextSibling) } } },
+                            { ele: 'i', classList: 'input-spec-remover $fa $fa-minus-circle', title: 'remove', evnts: { click: function () { this.parentNode.remove() } } }
                         ]
                     }
                 }
@@ -463,19 +450,13 @@ class workflows {
                     ele: 'div',
                     classList: 'container',
                     children: [
+                        { ele: 'div', iden: 'inputs', classList: 'inputs', label: 'Inputs', children: getInputs() },
                         {
-                            ele: 'div', iden: 'inputs', classList: 'inputs', label: 'Inputs', labelStyle: 'font-weight: bold', children: [
-                                { ele: 'span', text: 'Specify the inputs this automation expects' },
-                                ...getInputs(),
-                                { ele: 'button', text: 'add input', evnts: { click: function () { this.parentNode.insertBefore(render('automation-i-and-s', getInputBuilder()), this) } } }
+                            ele: 'div', classList: '$form-row', children: [
+                                { ele: 'input', iden: 'postInputTitleTemplate', label: 'Title template', attribs: { value: this.obj ? this.obj.postInputTitleTemplate || '' : '' } }
                             ]
                         },
-                        {
-                            ele: 'div', classList: 'inputs', label: 'Title template', labelStyle: 'font-weight: bold', children: [
-                                { ele: 'input', iden: 'postInputTitleTemplate', attribs: { value: this.obj ? this.obj.postInputTitleTemplate || '' : '' } }
-                            ]
-                        },
-                        { ele: 'div', label: 'Workflow', labelStyle: 'font-weight: bold', classList: 'wbfbldr', iden: 'container' }
+                        { ele: 'div', label: 'Workflow', classList: 'wbfbldr', iden: 'container' }
                     ]
                 }, (id, ele) => this[id] = ele)
 
@@ -500,8 +481,16 @@ class workflows {
                     ele: 'div',
                     classList: 'container',
                     children: [
-                        { ele: 'input', iden: 'name', label: 'Name', attribs: { value: this.obj ? this.obj.name : "" } },
-                        { ele: 'textarea', iden: 'description', label: 'Description', attribs: { value: this.obj ? this.obj.description : "" } }
+                        {
+                            ele: 'div', classList: '$form-row', children: [
+                                { ele: 'input', iden: 'name', label: 'Name:', attribs: { value: this.obj ? this.obj.name : "" } }
+                            ]
+                        },
+                        {
+                            ele: 'div', classList: '$form-col', children: [
+                                { ele: 'textarea', iden: 'description', label: 'Description:', attribs: { value: this.obj ? this.obj.description : "" } }
+                            ]
+                        }
                     ]
                 }, (id, ele) => this[id] = ele)
             }
@@ -1144,9 +1133,9 @@ class WfManager {
     constructor(container, action, input) {
 
         let tasks, jobid
-        if(action === 'designer')
+        if (action === 'designer')
             tasks = input
-        else if(action === 'viewjob')
+        else if (action === 'viewjob')
             jobid = input
 
         this.WF_BUILDER = 'Workflow Builder'
@@ -1186,8 +1175,8 @@ class WfManager {
         this.objs[this.WF_BUILDER] = this.wfBuilder = new WorkflowBuilder(this[this.WF_BUILDER], this, tasks, ['automation', 'workflow'])
         this.objs[this.JOBS_UI] = this.jobsUI = new JobsUI(this[this.JOBS_UI], this)
         this.objs[this.JOB_VIEWER] = this.jobViewer = new JobViewer(this[this.JOB_VIEWER], this)
-        
-        if(action == 'viewjob')
+
+        if (action == 'viewjob')
             this.openJob(jobid)
         else
             this.switchPanel(this.WF_BUILDER)

@@ -40,40 +40,18 @@ function EDCResTypeSelectionStory(args) {
             ele: 'div',
             children: [
                 {
-                    ele: 'input',
-                    classList: 'input-full-bkp',
-                    postlabel: 'Import from a instance',
-                    lblClass: 'label-full-bkp',
-                    attribs: {
-                        type: 'radio',
-                        name: 'backup-type',
-                        value: 'from-instance',
-                        checked: true
-                    }
+                    ele: 'input', classList: 'radio', postlabel: 'Import from a instance', lblClass: 'label-full-bkp',
+                    attribs: { type: 'radio', name: 'backup-type', value: 'from-instance', checked: true }
                 },
                 { ele: 'br' },
                 {
-                    ele: 'input',
-                    classList: 'input-res-config',
-                    postlabel: 'Manually enter the resource location',
-                    lblClass: 'label-res-config',
-                    attribs: {
-                        type: 'radio',
-                        name: 'backup-type',
-                        value: 'manual-config'
-                    }
+                    ele: 'input', classList: 'radio', postlabel: 'Manually enter the resource location', lblClass: 'label-res-config',
+                    attribs: { type: 'radio', name: 'backup-type', value: 'manual-config' }
                 },
                 { ele: 'br' },
                 {
-                    ele: 'input',
-                    classList: 'input-upload-xdoc',
-                    postlabel: 'Upload Xdocs',
-                    lblClass: 'label-upload-xdocs',
-                    attribs: {
-                        type: 'radio',
-                        name: 'backup-type',
-                        value: 'upload-xdocs'
-                    }
+                    ele: 'input', classList: 'radio', postlabel: 'Upload Xdocs', lblClass: 'label-upload-xdocs',
+                    attribs: { type: 'radio', name: 'backup-type', value: 'upload-xdocs' }
                 }
             ]
         })
@@ -104,23 +82,21 @@ class InstanceSelectionStory {
             return render('instance-selection-story', {
                 ele: 'div',
                 classList: 'inputs-full-bkp',
-                children: [
-                    {
-                        ele: 'input',
-                        label: 'search for instances',
-                        classList: 'input',
-                        evnts: {
-                            input: function (e) {
-                                self.listInstances(this.value, this.nextSibling)
-                            }
-                        }
-                    },
-                    {
-                        ele: 'div',
-                        classList: 'results',
-                        iden: 'results'
-                    }
-                ]
+                children: [{
+                    preBuilt: true,
+                    ele: makeSearchAndSelectButton(
+                        'instance where the resource to be backed up exists',
+                        'instances',
+                        inst => {
+                            if (!inst) return
+                            inst = inst.content
+                            let u = new URL(inst.urls.filter(url => url.tag.toLowerCase().includes("ldm") || url.tag.toLowerCase().includes("catalog"))[0].url)
+                            let url = u.protocol + "//" + u.host
+                            self.connDetail = { url: url, username: inst.appusername, password: inst.apppassword }
+                        },
+                        undefined, true
+                    )
+                }]
             }, (id, ele) => this[id] = ele)
         }
 
@@ -136,67 +112,6 @@ class InstanceSelectionStory {
 
         this.moral = () => ({ ...args, connDetail: this.connDetail })
 
-        this.inst_template = (item) => {
-            let self = this
-            let inst = JSON.parse(item.content)
-            let u = new URL(inst.urls.filter(url => url.tag.toLowerCase().includes("ldm") || url.tag.toLowerCase().includes("catalog"))[0].url)
-            let url = u.protocol + "//" + u.host
-            return {
-                ele: 'div',
-                classList: 'container',
-                children: [
-                    { ele: 'input', iden: 'chkbox', attribs: { type: 'radio', name: `instance-${this.uniqid}` } },
-
-                    { ele: 'span', text: 'Owner', classList: 'key' },
-                    { ele: 'span', text: item.owner, classList: 'value' },
-                    { ele: 'br' },
-
-                    { ele: 'span', text: 'IP address', classList: 'key' },
-                    { ele: 'span', text: inst.ipaddr, classList: 'value' },
-                    { ele: 'br' },
-
-                    { ele: 'span', text: 'Installation location', classList: 'key' },
-                    { ele: 'span', text: inst.installloc, classList: 'value' },
-                    { ele: 'br' },
-
-                    { ele: 'span', text: 'url', classList: 'key' },
-                    { ele: 'a', text: url, classList: 'value', attribs: { href: url, target: "_blank" } },
-                    { ele: 'br' },
-
-                    {
-                        ele: 'div',
-                        classList: 'tags',
-                        style: {
-                            padding: '10px'
-                        },
-                        attribs: {
-                            innerHTML: item.tags.map(t => `<span class="inst-searchresult-tag">${t}</span>`).join(' ')
-                        }
-                    }
-                ],
-                evnts: {
-                    click: function () {
-                        self.connDetail = { url: url, username: inst.appusername, password: inst.apppassword }
-                        let chkbox = this.querySelector('input[type="radio"]')
-                        chkbox.checked = !chkbox.checked
-                    }
-                }
-            }
-        }
-
-        this.listInstances = (q, where) => {
-            inodes.search(`%instances #edc ${q}`)
-                .then(resp => JSON.parse(resp.response))
-                .then(res => {
-                    where.innerHTML = ""
-                    res.results.forEach(item => {
-                        let templ = this.inst_template(item)
-                        if (templ) {
-                            render('inst-search-result', templ, x => 1, where)
-                        }
-                    })
-                })
-        }
     }
 }
 
@@ -221,38 +136,48 @@ class ResourceSelectionStory {
         this.listResources = (c, where) => {
             console.log(c)
             let self = this
-            callWithWaitUI(where, (done) => {
+            callWithWaitUI(where, (done, sst) => {
+                sst('Getting resources from the instance')
                 let headers = { Authorization: "Basic " + btoa(`${c.username}:${c.password}`) }
                 let getRConf = ncors_get(`${c.url}/access/1/catalog/resources`, undefined, headers)
                 let getVersion = ncors_get(`${c.url}/access/2/catalog/data/productInformation`, undefined, headers)
-                Promise.allSettled([getRConf, getVersion])
-                    .then(proms => {
-                        let resources = JSON.parse(proms[0].value.response)
-                        let version = JSON.parse(proms[1].value.response).releaseVersion
-                        where.innerHTML = ""
-                        tabulate(resources, where, {
-                            classPrefix: 'res-search-result',
-                            defaultSortKey: 'Name',
-                            keys: {
-                                "Select": { vFunc: (r) => { return { ele: 'input', attribs: { type: 'radio', name: `resource-${uniqId}`, resourceName: r.resourceName, resourceType: r.resourceTypeName, description: r.description }, evnts: { change: (e) => e.stopPropagation() } } } },
-                                "Name": { sortable: true, keyId: "resourceName" },
-                                "Type": { sortable: true, keyId: "resourceTypeName" },
-                                "Created By": { keyId: "createdBy" },
-                                "Description": { keyId: "description" }
-                            },
-                            rowEvents: {
-                                click: function () {
-                                    let chkbox = this.querySelector('input[type=radio]')
-                                    self.resourceName = chkbox.resourceName
-                                    self.resourceType = chkbox.resourceType
-                                    self.description = chkbox.description
-                                    self.version = version
-                                    chkbox.checked = !chkbox.checked
-                                }
+                Promise.allSettled([getRConf, getVersion]).then(proms => {
+                    let rejected = ''
+                    for (let i = 0; i < proms.length; i++) {
+                        if(proms[i].status === 'rejected') {
+                            rejected += JSON.stringify(proms[i].reason) + '\n\n'
+                        }
+                    }
+                    if(rejected) {
+                        done()
+                        where.innerText = rejected
+                        return
+                    }
+                    let resources = proms[0].value.json
+                    let version = proms[1].value.json.releaseVersion
+                    where.innerHTML = ""
+                    tabulate(resources, where, {
+                        classPrefix: 'res-search-result',
+                        defaultSortKey: 'Name',
+                        keys: {
+                            "Select": { vFunc: (r) => { return { ele: 'input', attribs: { type: 'radio', name: `resource-${uniqId}`, resourceName: r.resourceName, resourceType: r.resourceTypeName, description: r.description }, evnts: { change: (e) => e.stopPropagation() } } } },
+                            "Name": { sortable: true, keyId: "resourceName" },
+                            "Type": { sortable: true, keyId: "resourceTypeName" },
+                            "Created By": { keyId: "createdBy" },
+                            "Description": { keyId: "description" }
+                        },
+                        rowEvents: {
+                            click: function () {
+                                let chkbox = this.querySelector('input[type=radio]')
+                                self.resourceName = chkbox.resourceName
+                                self.resourceType = chkbox.resourceType
+                                self.description = chkbox.description
+                                self.version = version
+                                chkbox.checked = !chkbox.checked
                             }
-                        })
+                        }
                     })
-                    .finally(() => done())
+                }).finally(_ => done())
             })
         }
     }

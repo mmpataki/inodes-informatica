@@ -17,20 +17,17 @@
 }
 
 .automation-i-and-s-inputs {
-    display: block;
     width: 100%;
-    margin: 10px 0px 20px 0px;
     padding-top: 10px;
 }
 
 .automation-i-and-s-inputs > textarea, .automation-i-and-s-inputs > input {
-    width: 90%;
     font-family: monospace;
-    font-size: 1.1em;
+    font-size: 1.0em;
 }
 
 .automation-i-and-s-input-spec-remover {
-    margin-right: 10px;
+    margin-left: 5px;
     cursor:  pointer;
 }
 
@@ -387,9 +384,19 @@
 .automation-i-and-s-input-spec {
     display: flex;
     align-items: center;
-    padding: 5px 20px;
+    padding: 5px 0px 5px 20px;
 }
 
 .automation-i-and-s-input-spec > input, .automation-i-and-s-input-spec > select, .automation-i-and-s-input-spec > textarea {
     flex-grow: 1;
 }
+
+.automation-i-and-s-escript {
+    height: 250px;
+}
+
+.automation-i-and-s-escript > div {
+    height: 250px;
+}
+
+.automation-i-and-s-escript > div > div:nth-child(2) { height: 100%; }

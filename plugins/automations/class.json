@@ -1,5 +1,6 @@
 {
   "name": "automations",
+  "desc": "small actions which are repeating and boring but automate-able",
   "jsPaths": [
     "/config.js",
     "/infautils.js",

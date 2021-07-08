@@ -1,30 +1,24 @@
 class ia4jsnips {
 
+    /* markdown, be aware while formatting */
     getCard(obj) {
-        return render('ia4jsnips', {
-            ele: 'div', children: [
-                { ele: 'h2', text: obj.title },
-                {
-                    ele: 'div', styles: { marginBottom: '40px' }, children: [
-                        {
-                            ele: 'div', styles: { display: 'inline' }, html: `
-                                <b>Product:</b> 
-                                <a href='${infaUtils.getConfig().infacode.url}/${obj.product}' target='_blank'>${obj.product}</a>
-                                / 
-                                <a href='${infaUtils.getConfig().infacode.url}/${obj.product}/xref/${obj.component}'>${obj.component}</a>
-                            `
-                        },
-                        { ele: 'a', attribs: { classList: 'fa fa-download', href: `data:text/octet-stream;base64,${btoa(obj.instrumentation)}`, download: 'ia4j.props' }, text: ' Download', styles: { float: 'right', fontSize: '0.8em' } }
-                    ]
-                },
-                makeMarkdownViewer('viewer', obj.problem, ''),
-                {
-                    ele: 'div', styles: { marginTop: '40px' }, children: [
-                        { ele: 'pre', label: 'Instrumentation', classList: 'instr', text: obj.instrumentation }
-                    ]
-                }
-            ]
-        })
+        let dlink = `data:text/octet-stream;base64,${btoa(obj.instrumentation)}`
+        let content = `
+# ${obj.title}
+
+<a class='fa fa-download' href='${dlink}' download='ia4j.props' style='float: right; font-size: 0.8em'> Download</a>
+
+__Product__ : [${obj.product}](${infaUtils.getConfig().infacode.url}/${obj.product}) / [${obj.component}](${infaUtils.getConfig().infacode.url}/${obj.product}/xref/${obj.component})
+
+${obj.problem}
+
+### Instrumentation
+\`\`\`
+${obj.instrumentation}
+\`\`\`
+        `
+
+        return render('ia4jsnips', makeMarkdownViewer('viewer', content, ''))
     }
 
     getTags() { return [this.product.value, this.component.value] }

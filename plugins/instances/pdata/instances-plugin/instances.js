@@ -347,7 +347,7 @@ class instances {
         })
 
         let card_url_template = (k, v, id) => ({
-            ele: 'span', classList: 'url $aexternal', iden: this.makeUrlId(id), title: 'fetching the status...',
+            ele: 'span', classList: 'url', iden: this.makeUrlId(id), title: 'fetching the status...',
             evnts: {
                 mouseover: function () {
                     if (this.data) {
@@ -357,7 +357,7 @@ class instances {
                 }
             },
             children: [
-                { ele: 'a', text: k, attribs: { href: v, target: "_blank" } },
+                { ele: 'a', text: k, classList: '$aexternal', attribs: { href: v, target: "_blank" } },
                 {
                     ele: 'span', classList: 'urlstatus-refresher', title: 'force refresh status', html: '&#x21BB;',
                     attribs: { urlStatusReqData: { extra: this.makeUrlId(id), url: v, force: 'true' } },

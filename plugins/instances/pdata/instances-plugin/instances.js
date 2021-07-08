@@ -452,8 +452,7 @@ class instances {
         })
     }
 
-    getCopyContent(doc) {
-        let obj = JSON.parse(doc.content)
+    getCopyContent(obj, doc) {
         return `Hostname: <b>${obj.ipaddr}</b> &nbsp;<br/>
 Box credentials : <b>${obj.boxusername} / ${obj.boxpassword}</b><br/>
 App credentials : <b>${obj.appusername} / ${obj.apppassword}</b><br/>

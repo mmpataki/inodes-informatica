@@ -785,7 +785,7 @@ class WorkflowBuilder {
             this.tasks.push(this.newTask())
         this.graph.innerHTML = ''
         this.tasks.forEach(task => {
-            if (!task.uiElem) {
+            if (!task.uiElem || Object.keys(task.uiElem).length == 0) {
                 let taskUIElement = this.getTaskItem(task);
                 task.uiElem = taskUIElement;
             }
